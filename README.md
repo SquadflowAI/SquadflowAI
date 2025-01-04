@@ -8,7 +8,7 @@ Examples
 
 Contribution
 
-Discord: https://discord.gg/v6ssfcdn
+Discord: https://discord.gg/xNB4fVfXUX
 
 
 
