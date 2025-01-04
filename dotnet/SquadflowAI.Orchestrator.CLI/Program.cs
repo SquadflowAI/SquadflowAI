@@ -1,2 +1,7 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿
+// Create Agent Instructions:
+
+Console.WriteLine("Agent Name:");
+
+Console.WriteLine("LLM Api key:");
+

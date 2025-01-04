@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SquadflowAI.Orchestrator.CLI", "..\SquadflowAI.Orchestrator.CLI\SquadflowAI.Orchestrator.CLI.csproj", "{703FA973-B737-4C8A-A2A2-B0C872138FCC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SquadflowAI.Domain", "..\SquadflowAI.Domain\SquadflowAI.Domain.csproj", "{283813E6-FC80-4D40-92C8-0B59AD8E938B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SquadflowAI.Services", "..\SquadflowAI.Services\SquadflowAI.Services.csproj", "{007E1807-4649-48E2-81E8-982A8B7B3D1F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{703FA973-B737-4C8A-A2A2-B0C872138FCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{703FA973-B737-4C8A-A2A2-B0C872138FCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{703FA973-B737-4C8A-A2A2-B0C872138FCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{703FA973-B737-4C8A-A2A2-B0C872138FCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{283813E6-FC80-4D40-92C8-0B59AD8E938B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{283813E6-FC80-4D40-92C8-0B59AD8E938B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{283813E6-FC80-4D40-92C8-0B59AD8E938B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{283813E6-FC80-4D40-92C8-0B59AD8E938B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{007E1807-4649-48E2-81E8-982A8B7B3D1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{007E1807-4649-48E2-81E8-982A8B7B3D1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{007E1807-4649-48E2-81E8-982A8B7B3D1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{007E1807-4649-48E2-81E8-982A8B7B3D1F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,12 +1,16 @@
+<h2>SquadflowAI</h2>
+
 AI Agents builder and orchestrator
 
-Features
+<h2>Features</h2>
 
-Getting Started
+SquadflowAI eaither configures and runs AI Agent in run time or can scaffold separate Agent code for standalone execution
 
-Examples
+<h2>Getting Started<h2>
 
-Contribution
+<h2>Examples<h2>
+
+<h2>Contribution<h2>
 
 Discord: https://discord.gg/xNB4fVfXUX
 
