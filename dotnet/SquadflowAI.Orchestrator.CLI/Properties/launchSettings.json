@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "SquadflowAI.Orchestrator.CLI": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
