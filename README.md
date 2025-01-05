@@ -8,10 +8,15 @@ SquadflowAI eaither configures and runs AI Agent in run time or can scaffold sep
 
 <h2>Getting Started<h2>
 
-<h2>Examples<h2>
+<h2>Examples</h2>
 
-<h2>Contribution<h2>
+<h2>Contribution</h2>
 
+Contributions are welcomed.
+Create a new branch > Make a new feature/improvment > Create a Pull Request.
+</br>
+Your inputs and/or feature requests are welcomed in Discord Channel in general or feature request channels.
+</br>
 Discord: https://discord.gg/xNB4fVfXUX
 
 
