@@ -12,4 +12,8 @@
     <PackageReference Include="Npgsql" Version="9.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SquadflowAI.Domain\SquadflowAI.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

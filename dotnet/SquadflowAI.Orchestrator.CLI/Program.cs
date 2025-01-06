@@ -31,7 +31,7 @@ var builder = Host.CreateDefaultBuilder(args)
         services.AddSingleton<DbContext>();
         services.AddTransient<DatabaseInitializer>();
         // Repositories
-        services.AddScoped<IAgentConfigurationRepository, AgentConfigurationRepository>();
+        services.AddScoped<IAgentRepository, AgentRepository>();
 
     });
 

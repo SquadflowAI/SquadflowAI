@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SquadflowAI.Infrastructure.Interfaces
+namespace SquadflowAI.Domain
 {
-    public interface IAgentConfigurationRepository
+    internal class Task
     {
     }
 }

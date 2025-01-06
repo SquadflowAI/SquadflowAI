@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SquadflowAI.Services.Interfaces
 {
-    public interface IAgentBuilderService
+    public interface IAgentService
     {
     }
 }

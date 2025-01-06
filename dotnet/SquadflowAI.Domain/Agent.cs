@@ -11,6 +11,6 @@ namespace SquadflowAI.Domain
         public string Role { get; set; }
         public string Goal { get; set; }
         public string LLM { get; set; }
-        public IEnumerable<string> Tools { get; set; }
+        public IEnumerable<Tool> Tools { get; set; }
     }
 }

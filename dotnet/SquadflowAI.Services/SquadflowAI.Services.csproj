@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SquadflowAI.Domain\SquadflowAI.Domain.csproj" />
+    <ProjectReference Include="..\SquadflowAI.Infrastructure\SquadflowAI.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
