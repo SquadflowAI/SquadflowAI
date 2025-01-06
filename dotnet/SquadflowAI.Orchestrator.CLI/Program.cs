@@ -4,18 +4,28 @@ using Microsoft.Extensions.Hosting;
 using SquadflowAI.Infrastructure;
 using SquadflowAI.Infrastructure.Repository;
 using SquadflowAI.Infrastructure.Interfaces;
+using SquadflowAI.LLMConnector.OpenAI;
+using System;
+using SquadflowAI.LLMConnector.Interfaces;
 
 var builder = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((context, config) =>
     {
         // Add configuration from appsettings.json
         config.SetBasePath(Directory.GetCurrentDirectory())
-              .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+              .AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true);
     })
     .ConfigureServices((context, services) =>
     {
         // Get configuration
         var configuration = context.Configuration;
+        var openAIApiKey = configuration.GetValue<string>("OPENAI_API_KEY");
+
+        services.AddHttpClient<IOpenAPIClient, OpenAPIClient>(client =>
+        {
+            client.BaseAddress = new Uri("https://api.openai.com/");
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {openAIApiKey}");
+        });
 
         // Register services
         services.AddSingleton<DbContext>();
@@ -35,11 +45,18 @@ using (var scope = app.Services.CreateScope())
 }
 
 Console.WriteLine("Database initialized. Application is running!");
-Console.WriteLine("Press any key to exit...");
-Console.ReadKey();
 
+ 
+var openAIService = app.Services.GetRequiredService<IOpenAPIClient>();
+
+string prompt = "Explain quantum computing in simple terms.";
+var response = await openAIService.SendMessageAsync(prompt);
+
+Console.WriteLine(response);
 
 Console.WriteLine("Agent Name:");
 
 Console.WriteLine("LLM Api key:");
+
+Console.ReadKey();
 
