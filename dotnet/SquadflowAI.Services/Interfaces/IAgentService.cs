@@ -8,5 +8,6 @@ namespace SquadflowAI.Services.Interfaces
 {
     public interface IAgentService
     {
+        Task CreateAgentAsync();
     }
 }

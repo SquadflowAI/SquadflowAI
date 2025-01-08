@@ -1,0 +1,113 @@
+{
+    "name": "Football Stats Weekly Reporter",
+    "mission": "Gather football statistics from the internet, analyze trends, and deliver a detailed weekly report in PDF format via email.",
+    "capabilities": [
+        {
+            "task": "Search for football statistics",
+            "use_case": "Collect data on match results, player performance, team standings, and trends."
+        },
+        {
+            "task": "Analyze weekly data",
+            "use_case": "Identify trends, highlight key moments, and calculate performance metrics for players and teams."
+        },
+        {
+            "task": "Generate PDF report",
+            "use_case": "Create a professional, well-structured report summarizing the week's football statistics and insights."
+        },
+        {
+            "task": "Email report",
+            "use_case": "Send the PDF report to the user's email address every Sunday evening."
+        }
+    ],
+    "actions": [
+        {
+            "name": "Search Football Stats",
+            "description": "Search the web for the latest football statistics from trusted sources.",
+            "action-to-execute": "Scrape match data, player statistics, and team standings from sports websites.",
+            "inputs": [
+                "Keywords related to football matches, players, and leagues"
+            ],
+            "outputs": [
+                "Raw football statistics data (JSON or CSV)"
+            ],
+            "triggers": [
+                "Scheduled every Monday to Saturday at 9:00 PM"
+            ],
+            "tools": [
+                {
+                    "name": "web-client",
+                    "description": "Connects to web APIs or scrapes public sports data from trusted websites."
+                }
+            ]
+        },
+        {
+            "name": "Analyze Weekly Data",
+            "description": "Process and analyze the gathered data to identify key insights.",
+            "action-to-execute": "Calculate statistics such as top scorers, best players, and team standings; detect significant trends.",
+            "inputs": [
+                "Raw football statistics data"
+            ],
+            "outputs": [
+                "Summary insights and performance metrics"
+            ],
+            "triggers": [
+                "Scheduled every Sunday at 10:00 AM"
+            ],
+            "tools": [
+                {
+                    "name": "data-analyzer",
+                    "description": "Processes raw data and calculates performance metrics."
+                }
+            ]
+        },
+        {
+            "name": "Generate PDF Report",
+            "description": "Create a PDF summarizing weekly football statistics and insights.",
+            "action-to-execute": "Design and export a detailed PDF report with charts, tables, and written insights.",
+            "inputs": [
+                "Summary insights and performance metrics"
+            ],
+            "outputs": [
+                "PDF report"
+            ],
+            "triggers": [
+                "After completing 'Analyze Weekly Data' action"
+            ],
+            "tools": [
+                {
+                    "name": "pdf-generator",
+                    "description": "Generates a professional PDF document from structured data."
+                }
+            ]
+        },
+        {
+            "name": "Email Report",
+            "description": "Send the generated PDF report to the user's email.",
+            "action-to-execute": "Attach the PDF report to an email and send it to the specified address.",
+            "inputs": [
+                "PDF report"
+            ],
+            "outputs": [
+                "Sent email confirmation"
+            ],
+            "triggers": [
+                "After completing 'Generate PDF Report' action"
+            ],
+            "tools": [
+                {
+                    "name": "gmail-client",
+                    "description": "Sends emails via Gmail API with attachments."
+                }
+            ]
+        }
+    ],
+    "configuration": {
+        "email_recipient": "your-email@example.com",
+        "report_schedule": "Weekly on Sundays at 5:00 PM"
+    },
+    "limitations": [
+        "Relies on public sports websites; data availability may vary.",
+        "Accuracy of analysis depends on data quality from trusted sources.",
+        "Email delivery depends on internet connectivity and Gmail API availability."
+    ]
+}

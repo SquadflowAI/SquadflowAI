@@ -7,6 +7,8 @@ using SquadflowAI.Infrastructure.Interfaces;
 using SquadflowAI.LLMConnector.OpenAI;
 using System;
 using SquadflowAI.LLMConnector.Interfaces;
+using SquadflowAI.Services.Interfaces;
+using SquadflowAI.Services.AgentBuilder;
 
 var builder = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((context, config) =>
@@ -30,6 +32,7 @@ var builder = Host.CreateDefaultBuilder(args)
         // Register services
         services.AddSingleton<DbContext>();
         services.AddTransient<DatabaseInitializer>();
+        services.AddTransient<IAgentService, AgentService>();
         // Repositories
         services.AddScoped<IAgentRepository, AgentRepository>();
 
@@ -46,13 +49,21 @@ using (var scope = app.Services.CreateScope())
 
 Console.WriteLine("Database initialized. Application is running!");
 
- 
-var openAIService = app.Services.GetRequiredService<IOpenAPIClient>();
+//--TEST AREA
+
+//var openAIService = app.Services.GetRequiredService<IOpenAPIClient>();
+
+//string prompt = "Explain quantum computing in simple terms.";
+//var response = await openAIService.SendMessageAsync(prompt);
+
+//Console.WriteLine(response);
+
+var agentService = app.Services.GetRequiredService<IAgentService>();
 
 string prompt = "Explain quantum computing in simple terms.";
-var response = await openAIService.SendMessageAsync(prompt);
+await agentService.CreateAgentAsync();
 
-Console.WriteLine(response);
+//--TEST AREA END
 
 Console.WriteLine("Agent Name:");
 

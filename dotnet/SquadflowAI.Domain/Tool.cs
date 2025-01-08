@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SquadflowAI.Domain
 {
-    public class Tool
+    public class Tool2
     {
     }
 }

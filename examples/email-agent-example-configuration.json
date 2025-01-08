@@ -1,0 +1,88 @@
+{
+    "agent": {
+        "name": "Email Filtering Agent",
+        "mission": "Assist users by filtering, organizing, and managing their email inbox to improve productivity and reduce distractions.",
+        "capabilities": [
+            {
+                "task": "Categorize Emails",
+                "use_case": "Sort incoming emails into folders such as Work, Personal, Spam, etc."
+            },
+            {
+                "task": "Prioritize Emails",
+                "use_case": "Identify and flag high-priority emails based on context and sender reputation."
+            },
+            {
+                "task": "Auto-Respond",
+                "use_case": "Send predefined replies to frequent queries."
+            },
+            {
+                "task": "Calendar Integration",
+                "use_case": "Extract event details from emails and schedule them in the calendar."
+            }
+        ],
+        "actions": [
+            {
+                "name": "Categorize Emails",
+                "description": "Classify incoming emails into predefined categories.",
+                "action-to-execute": "Analyze subject, sender, and body to determine category.",
+                "inputs": [
+                    "Email subject",
+                    "Email sender",
+                    "Email body"
+                ],
+                "outputs": [
+                    "Email category",
+                    "Folder assignment"
+                ],
+                "triggers": [
+                    "When a new email arrives"
+                ],
+                "tools": [
+                    {
+                        "name": "gmail-client",
+                        "description": "Connects to Gmail API to read, categorize, and move emails."
+                    }
+                ]
+            },
+            {
+                "name": "Auto-Respond",
+                "description": "Send predefined responses to emails based on templates.",
+                "action-to-execute": "Match incoming email content to predefined templates and respond.",
+                "inputs": [
+                    "Email subject",
+                    "Email body"
+                ],
+                "outputs": [
+                    "Sent email reply"
+                ],
+                "triggers": [
+                    "When an email matches predefined criteria"
+                ],
+                "tools": [
+                    {
+                        "name": "gmail-client",
+                        "description": "Connects to Gmail API to send emails."
+                    }
+                ]
+            }
+        ],
+        "configuration": {
+            "filters": [
+                {
+                    "name": "Work Emails",
+                    "criteria": ["sender: work-domain.com", "contains: project"],
+                    "category": "Work"
+                },
+                {
+                    "name": "Spam",
+                    "criteria": ["contains: lottery", "contains: winner"],
+                    "category": "Spam"
+                }
+            ]
+        },
+        "limitations": [
+            "Cannot analyze encrypted email content.",
+            "Accuracy may vary for ambiguous email text."
+        ]
+    }
+}
