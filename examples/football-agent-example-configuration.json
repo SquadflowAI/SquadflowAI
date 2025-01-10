@@ -4,19 +4,19 @@
     "capabilities": [
         {
             "task": "Search for football statistics",
-            "use_case": "Collect data on match results, player performance, team standings, and trends."
+            "description": "Collect data on match results, player performance, team standings, and trends."
         },
         {
             "task": "Analyze weekly data",
-            "use_case": "Identify trends, highlight key moments, and calculate performance metrics for players and teams."
+            "description": "Identify trends, highlight key moments, and calculate performance metrics for players and teams."
         },
         {
             "task": "Generate PDF report",
-            "use_case": "Create a professional, well-structured report summarizing the week's football statistics and insights."
+            "description": "Create a professional, well-structured report summarizing the week's football statistics and insights."
         },
         {
             "task": "Email report",
-            "use_case": "Send the PDF report to the user's email address every Sunday evening."
+            "description": "Send the PDF report to the user's email address every Sunday evening."
         }
     ],
     "actions": [

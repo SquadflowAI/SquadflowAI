@@ -9,6 +9,7 @@ using System;
 using SquadflowAI.LLMConnector.Interfaces;
 using SquadflowAI.Services.Interfaces;
 using SquadflowAI.Services.AgentBuilder;
+using Newtonsoft.Json;
 
 var builder = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((context, config) =>
@@ -61,8 +62,11 @@ Console.WriteLine("Database initialized. Application is running!");
 var agentService = app.Services.GetRequiredService<IAgentService>();
 
 string prompt = "Explain quantum computing in simple terms.";
-await agentService.CreateAgentAsync();
 
+//await agentService.CreateAgentAsync();
+
+var result = await agentService.GetAgentByNameAsync("Football Stats Weekly Reporter");
+Console.WriteLine(JsonConvert.SerializeObject(result));
 //--TEST AREA END
 
 Console.WriteLine("Agent Name:");

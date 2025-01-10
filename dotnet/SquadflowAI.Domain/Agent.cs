@@ -25,7 +25,7 @@ namespace SquadflowAI.Domain
     public class Capability
     {
         public string Task { get; set; }
-        public string UseCase { get; set; }
+        public string Description { get; set; }
     }
 
     public class Action
