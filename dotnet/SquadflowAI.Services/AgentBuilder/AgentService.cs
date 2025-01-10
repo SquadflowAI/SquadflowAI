@@ -29,8 +29,7 @@ namespace SquadflowAI.Services.AgentBuilder
             //agent.Role = "role";
             //agent.Tools = tools;
 
-            string baseDirectory = Directory.GetParent(Directory.GetCurrentDirectory())?
-                                    .Parent?.Parent?.Parent?.Parent?.FullName;
+            string? baseDirectory = Directory.GetParent(Directory.GetCurrentDirectory())?.Parent?.Parent?.Parent?.Parent?.FullName;
 
             string jsonFilePath = Path.Combine(baseDirectory, "examples" , "football-agent-example-configuration.json");
             string fileContent = File.ReadAllText(jsonFilePath);

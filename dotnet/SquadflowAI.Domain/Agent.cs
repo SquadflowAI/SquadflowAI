@@ -14,20 +14,11 @@ namespace SquadflowAI.Domain
         //public IEnumerable<Tool> Tools { get; set; }
 
         // Basic Information
-         
         public string Name { get; set; }
         public string Mission { get; set; }
-
-        // Capabilities
         public List<Capability> Capabilities { get; set; }
-
-        // Actions
         public List<Action> Actions { get; set; }
-
-        // Configuration
         public Configuration Configuration { get; set; }
-
-        // Limitations
         public List<string> Limitations { get; set; }
     }
 
