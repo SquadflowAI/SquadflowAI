@@ -31,6 +31,7 @@
     <ProjectReference Include="..\SquadflowAI.Infrastructure\SquadflowAI.Infrastructure.csproj" />
     <ProjectReference Include="..\SquadflowAI.LLMConnector\SquadflowAI.LLMConnector.csproj" />
     <ProjectReference Include="..\SquadflowAI.Services\SquadflowAI.Services.csproj" />
+    <ProjectReference Include="..\SquadflowAI.Tools\SquadflowAI.Tools.csproj" />
   </ItemGroup>
 
   <ItemGroup>
