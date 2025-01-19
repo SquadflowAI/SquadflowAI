@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SquadflowAI.Tools.Interfaces
 {
-    public interface IWebScraper
+    public interface IWebScraper 
     {
         Task<string> ScrapeWebsiteAsync(string url);
     }

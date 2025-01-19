@@ -1,4 +1,5 @@
-﻿using SquadflowAI.Tools.Interfaces;
+﻿using SquadflowAI.Contracts;
+using SquadflowAI.Tools.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,10 @@ using System.Threading.Tasks;
 
 namespace SquadflowAI.Tools.Serper
 {
-    public class SerperAPIClient : ISerperAPIClient
+    public class SerperAPIClient : ITool //ISerperAPIClient
     {
+        public string Key => "serper-api";
+
         private readonly HttpClient _httpClient;
 
         public SerperAPIClient(HttpClient httpClient) 
@@ -19,8 +22,11 @@ namespace SquadflowAI.Tools.Serper
             _httpClient = httpClient;
         }
 
-        public async Task<string> MakeRequestAsync(string query)
+        public async Task<string> ExecuteAsync(ToolConfigDto configs)
         {
+            var query = configs.Input;
+            //configs.Inputs.TryGetValue("url", out dynamic query);
+            
             var data = new
             {
                 q = query,

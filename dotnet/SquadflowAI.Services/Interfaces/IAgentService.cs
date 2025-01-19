@@ -11,6 +11,6 @@ namespace SquadflowAI.Services.Interfaces
     {
         Task CreateAgentAsync();
 
-        Task<Agent> GetAgentByNameAsync(string agentName);
+        Task<Domain.Agent> GetAgentByNameAsync(string agentName);
     }
 }

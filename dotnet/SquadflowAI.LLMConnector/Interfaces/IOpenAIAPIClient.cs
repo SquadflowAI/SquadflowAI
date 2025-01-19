@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SquadflowAI.Contracts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace SquadflowAI.LLMConnector.Interfaces
 {
-    public interface IOpenAPIClient
+    public interface IOpenAIAPIClient
     {
-        Task<string> SendMessageAsync(string prompt);
+        Task<ResponseLLMDto> SendMessageAsync(RequestLLMDto request);
     }
 }

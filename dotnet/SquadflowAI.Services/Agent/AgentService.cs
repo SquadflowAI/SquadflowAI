@@ -9,7 +9,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace SquadflowAI.Services.AgentBuilder
+namespace SquadflowAI.Services.Agent
 {
     public class AgentService : IAgentService
     {
@@ -38,13 +38,13 @@ namespace SquadflowAI.Services.AgentBuilder
                 ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
             };
 
-            Agent agent = JsonConvert.DeserializeObject<Agent>(fileContent, settings);
+            Domain.Agent agent = JsonConvert.DeserializeObject<Domain.Agent>(fileContent, settings);
 
             // Save agent
             await _agentConfigurationRepository.CreateAgentAsync(agent);
         }
 
-        public async Task<Agent> GetAgentByNameAsync(string agentName)
+        public async Task<Domain.Agent> GetAgentByNameAsync(string agentName)
         {
             var result = await _agentConfigurationRepository.GetAgentByNameAsync(agentName);
 
@@ -54,7 +54,7 @@ namespace SquadflowAI.Services.AgentBuilder
         public async Task RunAgentAsync(string agentName)
         {
             // Get Agent
-            Agent agent = await GetAgentByNameAsync(agentName);
+            Domain.Agent agent = await GetAgentByNameAsync(agentName);
 
             // Generate System Promt
             // Get Tools

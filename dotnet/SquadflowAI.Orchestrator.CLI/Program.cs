@@ -8,12 +8,13 @@ using SquadflowAI.LLMConnector.OpenAI;
 using System;
 using SquadflowAI.LLMConnector.Interfaces;
 using SquadflowAI.Services.Interfaces;
-using SquadflowAI.Services.AgentBuilder;
+using SquadflowAI.Services.Agent;
 using Newtonsoft.Json;
 using SquadflowAI.Tools.Serper;
 using SquadflowAI.Tools.Interfaces;
 using SquadflowAI.Tools.WebScraper;
 using System.Net.Http;
+using SquadflowAI.Services.LLMExecutors;
 
 var builder = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((context, config) =>
@@ -29,19 +30,19 @@ var builder = Host.CreateDefaultBuilder(args)
         var openAIApiKey = configuration.GetValue<string>("OPENAI_API_KEY");
         var serperApiKey = configuration.GetValue<string>("SERPER_API_KEY");
 
-        services.AddHttpClient<IOpenAPIClient, OpenAPIClient>(client =>
+        services.AddHttpClient<IOpenAIAPIClient, OpenAIAPIClient>(client =>
         {
             client.BaseAddress = new Uri("https://api.openai.com/");
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {openAIApiKey}");
         });
 
-        services.AddHttpClient<ISerperAPIClient, SerperAPIClient>(client =>
+        services.AddHttpClient<ITool, SerperAPIClient>(client =>
         {
-            client.BaseAddress = new Uri("https://google.serper.dev/search/");
-            client.DefaultRequestHeaders.Add("X-API-KEY", $"Bearer {serperApiKey}");
+            client.BaseAddress = new Uri("https://google.serper.dev/search");
+            client.DefaultRequestHeaders.Add("X-API-KEY", $"{serperApiKey}");
         });
 
-        services.AddHttpClient<IWebScraper, WebScraper>(client =>
+        services.AddHttpClient<ITool, WebScraper>(client =>
         {
             client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36");
             client.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
@@ -55,6 +56,7 @@ var builder = Host.CreateDefaultBuilder(args)
         services.AddSingleton<DbContext>();
         services.AddTransient<DatabaseInitializer>();
         services.AddTransient<IAgentService, AgentService>();
+        services.AddTransient<IOpenAILLMExecutorService, OpenAILLMExecutorService>();
         // Repositories
         services.AddScoped<IAgentRepository, AgentRepository>();
 
@@ -73,19 +75,23 @@ Console.WriteLine("Database initialized. Application is running!");
 
 //--TEST AREA
 
-var openAIService = app.Services.GetRequiredService<IOpenAPIClient>();
+var openAIService = app.Services.GetRequiredService<IOpenAIAPIClient>();
 
-string prompt = "Explain quantum computing in simple terms.";
-var response = await openAIService.SendMessageAsync(prompt);
+//string prompt = "Explain quantum computing in simple terms.";
+//var response = await openAIService.SendMessageAsync(prompt);
 
-Console.WriteLine(response);
+//Console.WriteLine(response);
 
-//var agentService = app.Services.GetRequiredService<IAgentService>();
+var agentService = app.Services.GetRequiredService<IAgentService>();
 
 //await agentService.CreateAgentAsync();
 
-//var result = await agentService.GetAgentByNameAsync("Football Stats Weekly Reporter");
-//Console.WriteLine(JsonConvert.SerializeObject(result));
+var result = await agentService.GetAgentByNameAsync("Football Stats Weekly Reporter 2");
+Console.WriteLine(JsonConvert.SerializeObject(result));
+
+var exec = app.Services.GetRequiredService<IOpenAILLMExecutorService>();
+
+await exec.ExecuteAsync(result);
 //--TEST AREA END
 
 Console.WriteLine("Agent Name:");

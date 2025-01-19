@@ -1,0 +1,43 @@
+{
+    "name": "Football Stats Weekly Reporter 2",
+    "mission": "Gather football statistics from the internet, analyze trends, and deliver a detailed weekly report in PDF format via email.",
+    "capabilities": [
+        {
+            "task": "Search for football statistics",
+            "description": "Collect data on match results, player performance, team standings, and trends."
+        }
+    ],
+    "actions": [
+        {
+            "name": "Search Football Stats",
+            "description": "Search the web for the latest football statistics from trusted sources.",
+            "action-to-execute": "Scrape match data, player statistics, and team standings from sports websites.",
+            "outputs": [
+                "Raw football statistics data in string format"
+            ],
+            "tools": [
+                {
+                    "name": "serper-api",
+                    "description": "Google Search API, organic results data from Google Search.",
+                    "input": "search query in text format",
+                    "output": "json"
+                },
+                {
+                    "name": "web-scraper",
+                    "description": "Scrapes a specific website page based on url provided",
+                    "input": "url",
+                    "output": "html of the page"
+                }
+            ]
+        }
+    ],
+    "configuration": {
+        "email_recipient": "your-email@example.com",
+        "report_schedule": "Weekly on Sundays at 5:00 PM"
+    },
+    "limitations": [
+        "Relies on public sports websites; data availability may vary.",
+        "Accuracy of analysis depends on data quality from trusted sources.",
+        "Email delivery depends on internet connectivity and Gmail API availability."
+    ]
+}

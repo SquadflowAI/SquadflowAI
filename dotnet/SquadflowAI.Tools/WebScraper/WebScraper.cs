@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using SquadflowAI.Contracts;
 using SquadflowAI.Tools.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -10,18 +11,21 @@ using System.Threading.Tasks;
 
 namespace SquadflowAI.Tools.WebScraper
 {
-    public class WebScraper : IWebScraper
+    public class WebScraper : ITool// IWebScraper
     {
+        public string Key => "web-scraper";
+
         private readonly HttpClient _httpClient;
         public WebScraper(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
 
-        public async Task<string> ScrapeWebsiteAsync(string url)
+        public async Task<string> ExecuteAsync(ToolConfigDto configs)
         {
             try
             {
+                configs.Inputs.TryGetValue("url", out dynamic url);
                 // Make the HTTP request
                 var response = await _httpClient.GetAsync(url);
                 response.EnsureSuccessStatusCode();
