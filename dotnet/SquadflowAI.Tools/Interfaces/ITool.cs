@@ -11,5 +11,6 @@ namespace SquadflowAI.Tools.Interfaces
     {
         string Key { get; }
         public Task<string> ExecuteAsync(ToolConfigDto config);
+ 
     }
 }

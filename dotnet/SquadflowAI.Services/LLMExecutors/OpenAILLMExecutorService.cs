@@ -2,6 +2,7 @@
 using SquadflowAI.Contracts;
 using SquadflowAI.Domain;
 using SquadflowAI.Infrastructure;
+using SquadflowAI.Infrastructure.Interfaces;
 using SquadflowAI.LLMConnector.Interfaces;
 using SquadflowAI.LLMConnector.OpenAI;
 using SquadflowAI.Services.Interfaces;
@@ -20,12 +21,15 @@ namespace SquadflowAI.Services.LLMExecutors
     {
         private readonly ExecutionContext _context;
         private IOpenAIAPIClient _openAIAPIClient;
+        private IActionRunRepository _actionRunRepository;
         private readonly Dictionary<string, ITool> _tools;
-        public OpenAILLMExecutorService(IOpenAIAPIClient openAIAPIClient, IEnumerable<ITool> tools) 
+        public OpenAILLMExecutorService(IOpenAIAPIClient openAIAPIClient, IEnumerable<ITool> tools,
+            IActionRunRepository actionRunRepository) 
         {
             _openAIAPIClient = openAIAPIClient;
             _context = new ExecutionContext();
             _tools = tools.ToDictionary(strategy => strategy.Key);
+            _actionRunRepository = actionRunRepository;
         }
 
         public async Task ExecuteAsync(Domain.Agent agent, int maxIterations = 10)
@@ -36,6 +40,7 @@ namespace SquadflowAI.Services.LLMExecutors
             {
                 _context.IsComplete = false;
                 int iteration = 0;
+                var finalResult = "";
 
                 while (!_context.IsComplete && iteration < maxIterations)
                 {
@@ -95,8 +100,12 @@ namespace SquadflowAI.Services.LLMExecutors
                         }
                     }
 
+                    finalResult = toolResult;
+                    await _actionRunRepository.SaveActionAsync(agent.Name, action.Name, finalResult);
                     _context.IsComplete = true;
                 }
+
+                _context.Data.Add(action.Name, finalResult);
 
                 if (!_context.IsComplete)
                 {

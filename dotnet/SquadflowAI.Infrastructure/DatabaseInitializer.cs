@@ -20,11 +20,18 @@ namespace SquadflowAI.Infrastructure
 
         public void EnsureDatabaseSetup()
         {
-            const string checkTableQuery = @"
+            const string checkTableAgentsQuery = @"
             SELECT EXISTS (
                 SELECT FROM information_schema.tables 
                 WHERE table_schema = 'public' 
                 AND table_name = 'agents'
+            );";
+
+            const string checkTableActionRunQuery = @"
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables 
+                WHERE table_schema = 'public' 
+                AND table_name = 'actionrun'
             );";
 
             const string createTableQueryAgents = @"CREATE TABLE agents (
@@ -32,17 +39,30 @@ namespace SquadflowAI.Infrastructure
                                     name VARCHAR(255),
                                     data JSONB);";
 
+            const string createTableQueryActionRun = @"CREATE TABLE actionRun (
+                                    id SERIAL PRIMARY KEY,
+                                    agentName VARCHAR(255),
+                                    name VARCHAR(255),
+                                    date DATE,
+                                    data TEXT);";
+
             using var connection = _dbContext.CreateConnection();
 
             // Check if the table exists
-            bool tableExists = connection.ExecuteScalar<bool>(checkTableQuery);
-
-            if (!tableExists)
+            bool tableExistsAgents = connection.ExecuteScalar<bool>(checkTableAgentsQuery);
+            bool tableExistsActionRun = connection.ExecuteScalar<bool>(checkTableActionRunQuery);
+            
+            if (!tableExistsAgents)
             {
                 // Create the table if it doesn't exist
                 connection.Execute(createTableQueryAgents);
  
                 Console.WriteLine("Table 'Agents' has been created.");
+            }else if (!tableExistsActionRun)
+            {
+                connection.Execute(createTableQueryActionRun);
+
+                Console.WriteLine("Table 'ActionRun' has been created.");
             }
             else
             {

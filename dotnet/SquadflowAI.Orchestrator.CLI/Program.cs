@@ -59,6 +59,7 @@ var builder = Host.CreateDefaultBuilder(args)
         services.AddTransient<IOpenAILLMExecutorService, OpenAILLMExecutorService>();
         // Repositories
         services.AddScoped<IAgentRepository, AgentRepository>();
+        services.AddScoped<IActionRunRepository, ActionRunRepository>();
 
     });
 
