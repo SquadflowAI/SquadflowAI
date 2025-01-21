@@ -36,11 +36,11 @@ namespace SquadflowAI.Services.LLMExecutors
         {            
             var systemPrompt = GenerateSystemPrompt(agent.Name, agent.Mission, agent.Capabilities);
 
-            foreach (var action in agent.Actions) 
+            foreach (var action in agent.Actions.Where(x => x.Name == "Analyze Data")) 
             {
                 _context.IsComplete = false;
                 int iteration = 0;
-                var finalResult = "";
+                var toolFinalResult = "";
 
                 while (!_context.IsComplete && iteration < maxIterations)
                 {
@@ -49,7 +49,7 @@ namespace SquadflowAI.Services.LLMExecutors
                     var configsForLLM = new RequestLLMDto();
 
                     configsForLLM.SystemPrompt = systemPrompt;
- 
+
                     var toolResult = "";
 
                     for (int i = 0; i < action.Tools.Count; i++)
@@ -67,9 +67,30 @@ namespace SquadflowAI.Services.LLMExecutors
                         {
                             if (_tools.TryGetValue(action.Tools[i].Name, out var tool))
                             {
+                                var output = "";
+                                if (action.Tools[i].Name == "data-analyzer")
+                                {
+                                    //FOR TESTING
+                                    var data = await _actionRunRepository.GetActionRunByNameAndAgentNameAsync(agent.Name, "Search Football Stats");
+                                    toolResult = data;
+                                    
+                                    
+                                    var dictionary = new Dictionary<string, object>();
+                                    dictionary.Add("Name", action.Name);
+                                    dictionary.Add("Description", action.Description);
+                                    dictionary.Add("ActionToExecute", "Calculate statistics such as top scorers, best players, and team standings; detect significant trends.");// action.ActionToExecute);
+                                    dictionary.Add("Inputs", action.Inputs[0]);
+                                    dictionary.Add("Outputs", action.Outputs[0]);
+                                    dictionary.Add("Data", toolResult);
 
-                                var toolConfig = new ToolConfigDto { Input = input };
-                                var output = await tool.ExecuteAsync(toolConfig);
+                                    var toolConfig = new ToolConfigDto { Inputs = dictionary };
+                                    output = await tool.ExecuteAsync(toolConfig);
+                                } else
+                                {
+                                    var toolConfig = new ToolConfigDto { Input = input };
+                                    output = await tool.ExecuteAsync(toolConfig);
+                                }
+                               
 
                                 toolResult = output;
                                 toolCompleted = true;
@@ -100,12 +121,12 @@ namespace SquadflowAI.Services.LLMExecutors
                         }
                     }
 
-                    finalResult = toolResult;
-                    await _actionRunRepository.SaveActionAsync(agent.Name, action.Name, finalResult);
+                    toolFinalResult = toolResult;
+                    await _actionRunRepository.SaveActionRunAsync(agent.Name, action.Name, toolFinalResult);
+                    
+                    _context.Data.Add(action.Name, toolFinalResult);
                     _context.IsComplete = true;
                 }
-
-                _context.Data.Add(action.Name, finalResult);
 
                 if (!_context.IsComplete)
                 {
@@ -194,7 +215,7 @@ namespace SquadflowAI.Services.LLMExecutors
                   ""completed"": boolean true or false
                 }}
 
-                Ensure that the completed field indicates whether the action is done. If one more iteration needed set to false.";
+                Ensure that the completed field indicates whether the action is done. If one more iteration is needed then set to false.";
         }
 
         private string GenerateSystemPrompt(string role, string mission, List<Capability> capabilities)

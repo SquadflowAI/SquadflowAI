@@ -31,7 +31,7 @@ namespace SquadflowAI.Services.Agent
 
             string? baseDirectory = Directory.GetParent(Directory.GetCurrentDirectory())?.Parent?.Parent?.Parent?.Parent?.FullName;
 
-            string jsonFilePath = Path.Combine(baseDirectory, "examples" , "football-agent-example-configuration.json");
+            string jsonFilePath = Path.Combine(baseDirectory, "examples" , "football-agent-example-configuration - Copy.json");
             string fileContent = File.ReadAllText(jsonFilePath);
             var settings = new JsonSerializerSettings
             {

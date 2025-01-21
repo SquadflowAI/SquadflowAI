@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SquadflowAI.Tools.WebScraper
 {
-    public class WebScraper : ITool// IWebScraper
+    public class WebScraper : ITool
     {
         public string Key => "web-scraper";
 
@@ -26,12 +26,10 @@ namespace SquadflowAI.Tools.WebScraper
         {
             try
             {
-
                 List<string> result = new List<string>();
 
                 if (configs.Input is string singleUrl)
                 {
-                    // Handle single URL directly
                     var scrapedHtml = await ScrapeAsync(singleUrl);
                     if (scrapedHtml != null)
                     {
@@ -40,7 +38,6 @@ namespace SquadflowAI.Tools.WebScraper
                 }
                 else if (configs.Input is IEnumerable<string> urlList)
                 {
-                    // Handle strongly-typed list of strings (e.g., List<string>, string[])
                     int counter = 0;   
                     foreach (var currentUrl in urlList)
                     {
@@ -54,7 +51,6 @@ namespace SquadflowAI.Tools.WebScraper
                         {
                             result.Add(scrapedHtml);
                         }
-
                         counter++;
                     }
                 }
@@ -89,23 +85,18 @@ namespace SquadflowAI.Tools.WebScraper
                                 result.Add(scrapedHtml);
                                 
                             }
-
                             counter++;
-
                         }
                     }
                     else
                     {
-                        // Handle unexpected token types
                         throw new InvalidOperationException("The 'Input' must be either a string, a list of strings, or a valid JToken.");
                     }
                 }
                 else
                 {
-                    // Handle invalid types
                     throw new InvalidOperationException("The 'Input' must be either a string, a list of strings, or a valid JToken.");
                 }
-
 
                 if (result.Count > 0)
                 {
@@ -130,11 +121,9 @@ namespace SquadflowAI.Tools.WebScraper
                 response.EnsureSuccessStatusCode();
                 var htmlContent = await response.Content.ReadAsStringAsync();
 
-                // Parse HTML using HtmlAgilityPack
                 var htmlDoc = new HtmlDocument();
                 htmlDoc.LoadHtml(htmlContent);
 
-                // Extract text content
                 var plainText = htmlDoc.DocumentNode.InnerText;
 
                 // Clean up the extracted text
@@ -145,21 +134,18 @@ namespace SquadflowAI.Tools.WebScraper
             }
             catch (TaskCanceledException ex) when (ex.CancellationToken == CancellationToken.None)
             {
-                // Handle timeout specifically (HttpRequestException can be caught if it's a timeout)
                 Console.WriteLine($"Request timed out for URL: {url}");
-                return null;  // Return null to indicate failure and move on to the next URL
+                return null;  
             }
             catch (HttpRequestException ex)
             {
-                // Handle general HTTP request errors (e.g., network issues)
                 Console.WriteLine($"Error fetching URL {url}: {ex.Message}");
-                return null;  // Return null to indicate failure and move on to the next URL
+                return null;  
             }
             catch (Exception ex)
             {
-                // Handle any other exceptions
                 Console.WriteLine($"Unexpected error for URL {url}: {ex.Message}");
-                return null;  // Return null to indicate failure and move on to the next URL
+                return null;   
             }
         }
 

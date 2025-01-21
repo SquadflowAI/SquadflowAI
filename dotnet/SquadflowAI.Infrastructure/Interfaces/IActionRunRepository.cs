@@ -8,6 +8,8 @@ namespace SquadflowAI.Infrastructure.Interfaces
 {
     public interface IActionRunRepository
     {
-        Task SaveActionAsync(string agentName, string actionName, string data);
+        Task SaveActionRunAsync(string agentName, string actionName, string data);
+
+        Task<string> GetActionRunByNameAndAgentNameAsync(string agent, string actionName);
     }
 }

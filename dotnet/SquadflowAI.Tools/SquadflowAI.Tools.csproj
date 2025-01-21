@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SquadflowAI.Contracts\SquadflowAI.Contracts.csproj" />
+    <ProjectReference Include="..\SquadflowAI.LLMConnector\SquadflowAI.LLMConnector.csproj" />
   </ItemGroup>
 
 </Project>

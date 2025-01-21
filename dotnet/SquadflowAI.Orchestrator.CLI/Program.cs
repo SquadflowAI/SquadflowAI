@@ -15,6 +15,7 @@ using SquadflowAI.Tools.Interfaces;
 using SquadflowAI.Tools.WebScraper;
 using System.Net.Http;
 using SquadflowAI.Services.LLMExecutors;
+using SquadflowAI.Tools.DataAnalyzer;
 
 var builder = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((context, config) =>
@@ -52,6 +53,8 @@ var builder = Host.CreateDefaultBuilder(args)
             client.DefaultRequestHeaders.Add("Upgrade-Insecure-Requests", "1");
         });
 
+        services.AddTransient<ITool, DataAnalyzer>();
+
         // Register services
         services.AddSingleton<DbContext>();
         services.AddTransient<DatabaseInitializer>();
@@ -87,7 +90,7 @@ var agentService = app.Services.GetRequiredService<IAgentService>();
 
 //await agentService.CreateAgentAsync();
 
-var result = await agentService.GetAgentByNameAsync("Football Stats Weekly Reporter 2");
+var result = await agentService.GetAgentByNameAsync("Football Stats Reporter 3");
 Console.WriteLine(JsonConvert.SerializeObject(result));
 
 var exec = app.Services.GetRequiredService<IOpenAILLMExecutorService>();

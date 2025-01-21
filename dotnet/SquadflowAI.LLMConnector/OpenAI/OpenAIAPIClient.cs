@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SquadflowAI.LLMConnector.OpenAI
@@ -89,8 +90,8 @@ namespace SquadflowAI.LLMConnector.OpenAI
                     return false; // Content is missing
                 }
 
-                // Parse 'content' as a JSON object
-                var contentObject = JsonConvert.DeserializeObject<ResponseLLMDto>(parsedResponse);
+                string cleanedResponse = Regex.Replace(parsedResponse, @"```json|```", "").Trim();
+                var contentObject = JsonConvert.DeserializeObject<ResponseLLMDto>(cleanedResponse);
 
                 // Check if 'completed' exists and at least one of 'input' or 'output' exists
                 return contentObject != null;
