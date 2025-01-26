@@ -22,7 +22,7 @@ namespace SquadflowAI.Tools.Serper
             _httpClient = httpClient;
         }
 
-        public async Task<string> ExecuteAsync(ToolConfigDto configs)
+        public async Task<ToolResponseDto> ExecuteAsync(ToolConfigDto configs)
         {
             var query = configs.Input;
             //configs.Inputs.TryGetValue("url", out dynamic query);
@@ -39,7 +39,13 @@ namespace SquadflowAI.Tools.Serper
 
             var response = await _httpClient.PostAsync("", content);
 
-            return await response.Content.ReadAsStringAsync();
+            var result = new ToolResponseDto()
+            {
+                Data = await response.Content.ReadAsStringAsync(),
+                DataType = Contracts.Enums.ToolDataTypeEnum.String
+            };
+
+            return result;
         }
 
     }

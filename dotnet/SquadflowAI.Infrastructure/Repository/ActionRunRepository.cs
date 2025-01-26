@@ -30,7 +30,19 @@ namespace SquadflowAI.Infrastructure.Repository
             await connection.ExecuteAsync(actionRunQuery, new { agentName, actionName, now, data });
         }
 
-        public async Task<string> GetActionRunByNameAndAgentNameAsync(string agent, string actionName)
+        public async Task SaveActionRunForByteDataAsync(string agentName, string actionName, byte[] bytedata)
+        {
+            using var connection = _dbContext.CreateConnection();
+            connection.Open();
+
+            var now = DateTime.Now;
+
+            var actionRunQuery = "INSERT INTO actionRun (agentname, name, date, bytedata) VALUES (@agentName, @actionName, @now, @bytedata)";
+
+            await connection.ExecuteAsync(actionRunQuery, new { agentName, actionName, now, bytedata });
+        }
+
+        public async Task<string> GetActionRunDataByNameAndAgentNameAsync(string agent, string actionName)
         {
             using var connection = _dbContext.CreateConnection();
             connection.Open();
@@ -42,6 +54,24 @@ namespace SquadflowAI.Infrastructure.Repository
             AND a.agentname = @agentname";
 
             string agentResult = await connection.QuerySingleOrDefaultAsync<string>(actionRunQuery, new { name = actionName, agentname = agent });
+
+            //var result = JsonConvert.DeserializeObject<Agent>(agentResult);
+
+            return agentResult;
+        }
+
+        public async Task<byte[]> GetActionRunByteDataByNameAndAgentNameAsync(string agent, string actionName)
+        {
+            using var connection = _dbContext.CreateConnection();
+            connection.Open();
+
+            var actionRunQuery = @"
+            SELECT a.bytedata
+            FROM actionRun a
+            WHERE a.name = @name 
+            AND a.agentname = @agentname";
+
+            var agentResult = await connection.QuerySingleOrDefaultAsync<byte[]>(actionRunQuery, new { name = actionName, agentname = agent });
 
             //var result = JsonConvert.DeserializeObject<Agent>(agentResult);
 

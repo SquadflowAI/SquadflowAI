@@ -16,6 +16,8 @@ using SquadflowAI.Tools.WebScraper;
 using System.Net.Http;
 using SquadflowAI.Services.LLMExecutors;
 using SquadflowAI.Tools.DataAnalyzer;
+using SquadflowAI.Tools.PdfGenerator;
+using SquadflowAI.Tools.GmailClient;
 
 var builder = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((context, config) =>
@@ -30,6 +32,9 @@ var builder = Host.CreateDefaultBuilder(args)
         var configuration = context.Configuration;
         var openAIApiKey = configuration.GetValue<string>("OPENAI_API_KEY");
         var serperApiKey = configuration.GetValue<string>("SERPER_API_KEY");
+
+        var gmailEmail = configuration.GetValue<string>("GMAIL_EMAIL");
+        var gmailAppPassword = configuration.GetValue<string>("GMAIL_APPPASWORD");
 
         services.AddHttpClient<IOpenAIAPIClient, OpenAIAPIClient>(client =>
         {
@@ -54,6 +59,9 @@ var builder = Host.CreateDefaultBuilder(args)
         });
 
         services.AddTransient<ITool, DataAnalyzer>();
+        services.AddTransient<ITool, PdfGenerator>();
+        services.AddTransient<ITool, GmailClient>();
+        
 
         // Register services
         services.AddSingleton<DbContext>();
@@ -79,18 +87,11 @@ Console.WriteLine("Database initialized. Application is running!");
 
 //--TEST AREA
 
-var openAIService = app.Services.GetRequiredService<IOpenAIAPIClient>();
-
-//string prompt = "Explain quantum computing in simple terms.";
-//var response = await openAIService.SendMessageAsync(prompt);
-
-//Console.WriteLine(response);
-
 var agentService = app.Services.GetRequiredService<IAgentService>();
 
 //await agentService.CreateAgentAsync();
 
-var result = await agentService.GetAgentByNameAsync("Football Stats Reporter 3");
+var result = await agentService.GetAgentByNameAsync("Football Stats Agent");
 Console.WriteLine(JsonConvert.SerializeObject(result));
 
 var exec = app.Services.GetRequiredService<IOpenAILLMExecutorService>();

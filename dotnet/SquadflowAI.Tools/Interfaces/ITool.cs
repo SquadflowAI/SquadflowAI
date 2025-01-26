@@ -10,7 +10,7 @@ namespace SquadflowAI.Tools.Interfaces
     public interface ITool
     {
         string Key { get; }
-        public Task<string> ExecuteAsync(ToolConfigDto config);
+        public Task<ToolResponseDto> ExecuteAsync(ToolConfigDto config);
  
     }
 }

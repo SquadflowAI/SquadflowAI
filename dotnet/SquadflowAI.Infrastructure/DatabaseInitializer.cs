@@ -43,8 +43,9 @@ namespace SquadflowAI.Infrastructure
                                     id SERIAL PRIMARY KEY,
                                     agentName VARCHAR(255),
                                     name VARCHAR(255),
-                                    date DATE,
-                                    data TEXT);";
+                                    date TIMESTAMP,
+                                    data TEXT,
+                                    bytedata BYTEA);";
 
             using var connection = _dbContext.CreateConnection();
 

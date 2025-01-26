@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SquadflowAI.Tools.Interfaces
+namespace SquadflowAI.Contracts.Enums
 {
-    public interface IWebScraper 
+    public enum ToolDataTypeEnum
     {
-        Task<string> ScrapeWebsiteAsync(string url);
+         None = 0,
+         String = 1,
+         Byte = 2
     }
 }

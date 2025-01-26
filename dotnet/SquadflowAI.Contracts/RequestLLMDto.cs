@@ -10,5 +10,6 @@ namespace SquadflowAI.Contracts
     {
         public string SystemPrompt {  get; set; }
         public string UserPrompt { get; set; }
+        public int MaxTokens { get; set; }
     }
 }

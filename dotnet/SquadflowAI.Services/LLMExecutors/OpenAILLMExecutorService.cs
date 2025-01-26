@@ -8,12 +8,6 @@ using SquadflowAI.LLMConnector.OpenAI;
 using SquadflowAI.Services.Interfaces;
 using SquadflowAI.Tools;
 using SquadflowAI.Tools.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SquadflowAI.Services.LLMExecutors
 {
@@ -36,11 +30,15 @@ namespace SquadflowAI.Services.LLMExecutors
         {            
             var systemPrompt = GenerateSystemPrompt(agent.Name, agent.Mission, agent.Capabilities);
 
-            foreach (var action in agent.Actions.Where(x => x.Name == "Analyze Data")) 
+            var test = new [] { "Email Report" };
+            agent.Actions = agent.Actions.Where(x => test.Contains(x.Name)).ToList();
+            //foreach (var action in agent.Actions)
+            for (int ai = 0; ai < agent.Actions.Count; ai++)
             {
                 _context.IsComplete = false;
                 int iteration = 0;
-                var toolFinalResult = "";
+                var actionFinalResult = "";
+                byte[] byteData = null;
 
                 while (!_context.IsComplete && iteration < maxIterations)
                 {
@@ -51,80 +49,128 @@ namespace SquadflowAI.Services.LLMExecutors
                     configsForLLM.SystemPrompt = systemPrompt;
 
                     var toolResult = "";
+                    byte[] toolResultByteData = null;
 
-                    for (int i = 0; i < action.Tools.Count; i++)
+                    for (int ti = 0; ti < agent.Actions[ai].Tools.Count; ti++)
                     {
-                        var nextToolName = i < action.Tools.Count - 1 ? action.Tools[i + 1].Name : null;
+                        var nextToolName = ti < agent.Actions[ai].Tools.Count - 1 ? agent.Actions[ai].Tools[ti + 1].Name : null;
  
-                        configsForLLM.UserPrompt = PrepareToolInputPrompt(action, toolResult, action.Tools[i].Name, nextToolName);
+                        //get result from previous Action
+                        if(ai > 0)
+                        {
+                            var prevAction = agent.Actions[ai - 1];
+                            if(prevAction.Tools.Count > 0 && prevAction.Tools.Last().Name == "pdf-generator")
+                            {
+                                toolResultByteData = await _actionRunRepository.GetActionRunByteDataByNameAndAgentNameAsync(agent.Name, prevAction.Name);
+                                if(toolResultByteData != null)
+                                {
+                                    toolResult = "Result is a PDF in byte array format. Don't prepare any input, leave it empty. Set stricly completed to true";
+                                }
+                                
+                            } else
+                            {
+                                var data = await _actionRunRepository.GetActionRunDataByNameAndAgentNameAsync(agent.Name, prevAction.Name);
+                                toolResult = data;
+                            }
+                        }
 
-                        var llmResponse = await _openAIAPIClient.SendMessageAsync(configsForLLM);
+                        //for test
+                        //var data = await _actionRunRepository.GetActionRunByNameAndAgentNameAsync(agent.Name, "Design HTML and Generate PDF Report");
+                        toolResultByteData = await _actionRunRepository.GetActionRunByteDataByNameAndAgentNameAsync(agent.Name, "Design HTML and Generate PDF Report");
+                        toolResult = "Result is a PDF in byte array format. Don't prepare any input, leave it empty. Set stricly completed to true";
 
-                        var toolCompleted = false; //llmResponse.Completed;
+                        configsForLLM.UserPrompt = PrepareToolInputPrompt(agent.Actions[ai], toolResult, agent.Actions[ai].Tools[ti].Name, nextToolName);
+
+                        ResponseLLMDto llmResponse = null;
+
+                        if (agent.Actions[ai].Tools[ti].Name == "pdf-generator")
+                        {
+                            configsForLLM.MaxTokens = 2000;
+                            llmResponse = await _openAIAPIClient.SendMessageAsync(configsForLLM);
+                        } else
+                        {
+                            llmResponse = await _openAIAPIClient.SendMessageAsync(configsForLLM);
+                        }
+
+                        var toolCompleted = false;
                         dynamic input = llmResponse.Input;
 
                         while (!toolCompleted && iteration < maxIterations)
                         {
-                            if (_tools.TryGetValue(action.Tools[i].Name, out var tool))
+                            if (_tools.TryGetValue(agent.Actions[ai].Tools[ti].Name, out var tool))
                             {
                                 var output = "";
-                                if (action.Tools[i].Name == "data-analyzer")
+                                if (agent.Actions[ai].Tools[ti].Name == "data-analyzer")
                                 {
-                                    //FOR TESTING
-                                    var data = await _actionRunRepository.GetActionRunByNameAndAgentNameAsync(agent.Name, "Search Football Stats");
-                                    toolResult = data;
-                                    
-                                    
+
                                     var dictionary = new Dictionary<string, object>();
-                                    dictionary.Add("Name", action.Name);
-                                    dictionary.Add("Description", action.Description);
-                                    dictionary.Add("ActionToExecute", "Calculate statistics such as top scorers, best players, and team standings; detect significant trends.");// action.ActionToExecute);
-                                    dictionary.Add("Inputs", action.Inputs[0]);
-                                    dictionary.Add("Outputs", action.Outputs[0]);
+                                    dictionary.Add("Name", agent.Actions[ai].Name);
+                                    dictionary.Add("Description", agent.Actions[ai].Description);
+                                    dictionary.Add("ActionToExecute", agent.Actions[ai].ActionToExecute); 
                                     dictionary.Add("Data", toolResult);
 
                                     var toolConfig = new ToolConfigDto { Inputs = dictionary };
-                                    output = await tool.ExecuteAsync(toolConfig);
+                                    var result = await tool.ExecuteAsync(toolConfig);
+                                    output = result.Data;
+
+                                } else if (agent.Actions[ai].Tools[ti].Name == "gmail-client")
+                                {
+                                    
+                                    var dictionary = new Dictionary<string, object>();
+                                    dictionary.Add("Pdf", toolResultByteData);
+                                    dictionary.Add("PdfName", "TestPdf");
+                                    dictionary.Add("RecipientEmail", agent.Actions[ai].Tools[ti].RecipientEmail); 
+                                    dictionary.Add("RecipientName", agent.Actions[ai].Tools[ti].RecipientName);
+
+                                    var toolConfig = new ToolConfigDto { Inputs = dictionary };
+                                    var result = await tool.ExecuteAsync(toolConfig);
+                                    output = result.Data;
+
                                 } else
                                 {
                                     var toolConfig = new ToolConfigDto { Input = input };
-                                    output = await tool.ExecuteAsync(toolConfig);
+                                    var result = await tool.ExecuteAsync(toolConfig);
+                                    
+                                    
+                                    if(result != null && 
+                                       result.DataType == Contracts.Enums.ToolDataTypeEnum.Byte && 
+                                       result.ByteData != null)
+                                    {
+                                        byteData = result.ByteData;
+
+                                    } else if (result != null && result.DataType == Contracts.Enums.ToolDataTypeEnum.String)
+                                    {
+                                        output = result.Data;
+                                    }
+                                    
                                 }
-                               
 
                                 toolResult = output;
                                 toolCompleted = true;
-                                //configsForLLM.UserPrompt = AnalyzeToolOutputPrompt(toolResult, nextToolName);
-
-                                //llmResponse = await _openAIAPIClient.SendMessageAsync(configsForLLM);
-
-                                //if (llmResponse.Completed)
-                                //{
-                                //    toolCompleted = true;  
-                                //}
-                                //else
-                                //{
-                                //    iteration++;
-                                //    if (iteration >= maxIterations)
-                                //    {
-                                //        Console.WriteLine("Maximum iterations reached for this tool.");
-                                //        break; // Exit inner loop due to iteration limit
-                                //    }
-                                //}
+ 
                             }
                             else
                             {
                                 // Handle unrecognized tool or incomplete response
-                                Console.WriteLine($"Tool '{action.Tools[i].Name}' not found or invalid instruction.");
+                                Console.WriteLine($"Tool '{agent.Actions[ai].Tools[ti].Name}' not found or invalid instruction.");
                                 break;
                             }
                         }
                     }
 
-                    toolFinalResult = toolResult;
-                    await _actionRunRepository.SaveActionRunAsync(agent.Name, action.Name, toolFinalResult);
+                    actionFinalResult = toolResult;
+                    if (actionFinalResult != null || !string.IsNullOrEmpty(actionFinalResult)) 
+                    {
+                        await _actionRunRepository.SaveActionRunAsync(agent.Name, agent.Actions[ai].Name, actionFinalResult);
+                    }
+
+                    if (byteData != null)
+                    {
+                        await _actionRunRepository.SaveActionRunForByteDataAsync(agent.Name, agent.Actions[ai].Name, byteData);
+                    }
                     
-                    _context.Data.Add(action.Name, toolFinalResult);
+                    
+                    _context.Data.Add(agent.Actions[ai].Name, actionFinalResult);
                     _context.IsComplete = true;
                 }
 
@@ -136,30 +182,6 @@ namespace SquadflowAI.Services.LLMExecutors
 
             Console.WriteLine("Operation finished");
         }
-
-
-
-        
-
-        //private string PrepareToolInputPrompt(Domain.Action action, string toolResult, string toolName, string? nextToolName)
-        //{
-        //    return $@"
-        //        You are tasked with executing an action using a sequence of tools.
-
-        //        Action: {action.Name}
-        //        Current Tool: {toolName}
-        //        Next Tool: {(nextToolName ?? "None")}
-
-        //        Tool Result So Far: {toolResult}
-
-        //        Strictly adhere to the following response format:
-        //        {{
-        //          ""input"": ""Provide the necessary input for the tool as a string or JSON object"",
-        //          ""completed"": false
-        //        }}
-
-        //        Prepare the necessary input for the current tool to proceed.";
-        //}
 
         private string PrepareToolInputPrompt(Domain.Action action, string toolResult, string toolName, string? nextToolName)
         {
@@ -175,6 +197,8 @@ namespace SquadflowAI.Services.LLMExecutors
                 "url" => "The tool expects input as a single URL or a list of URLs. Strictly provide only URLs in the required format.",
                 "text" => "The tool expects input in plain text format. Prepare the necessary input accordingly.",
                 "json" => "The tool expects input as a JSON object. Provide the required data in JSON format.",
+                "html" => "The tool expects input as a HTML object. Provide the required data in HTML format.",
+                "pdf" => "The tool expects input PDF as a byte array. Provide the required data in byte array format.",
                 _ => toolConfig?.Input
             };
 
@@ -192,7 +216,7 @@ namespace SquadflowAI.Services.LLMExecutors
 
                 Strictly adhere to the following response format:
                 {{
-                  ""input"": <appropriate format based on the tool's requirements>,
+                  ""input"": ""appropriate format based on the tool's requirements. Stricly avoid JSON in your answer"",
                   ""completed"": false
                 }}
 

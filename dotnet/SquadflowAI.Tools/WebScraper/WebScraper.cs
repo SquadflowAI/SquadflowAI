@@ -22,7 +22,7 @@ namespace SquadflowAI.Tools.WebScraper
             _httpClient = httpClient;
         }
 
-        public async Task<string> ExecuteAsync(ToolConfigDto configs)
+        public async Task<ToolResponseDto> ExecuteAsync(ToolConfigDto configs)
         {
             try
             {
@@ -100,7 +100,14 @@ namespace SquadflowAI.Tools.WebScraper
 
                 if (result.Count > 0)
                 {
-                    var finalResult = string.Join(", NEXT SCRAPED HTML: ", result.Select((x => x)));
+                    var joinResult = string.Join(", NEXT SCRAPED HTML: ", result.Select((x => x)));
+
+
+                    var finalResult = new ToolResponseDto()
+                    {
+                        Data = joinResult,
+                        DataType = Contracts.Enums.ToolDataTypeEnum.String
+                    };
 
                     return finalResult;
                 }
@@ -109,7 +116,7 @@ namespace SquadflowAI.Tools.WebScraper
             }
             catch (Exception ex)
             {
-                return $"Error occurred: {ex.Message}";
+                return null;
             }
         }
 

@@ -31,7 +31,7 @@ namespace SquadflowAI.LLMConnector.OpenAI
                 new { role = "system", content = request.SystemPrompt },
                 new { role = "user", content = request.UserPrompt }
             },
-                max_tokens = 500,
+                max_tokens = request.MaxTokens > 0 ? request.MaxTokens : 500,
                 temperature = 0.7
             };
 

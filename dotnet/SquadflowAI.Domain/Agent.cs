@@ -44,6 +44,9 @@ namespace SquadflowAI.Domain
         public string Name { get; set; }
         public string Description { get; set; }
         public string Input { get; set; }
+
+        public string RecipientEmail { get; set; }
+        public string RecipientName { get; set; }
     }
 
     public class Configuration

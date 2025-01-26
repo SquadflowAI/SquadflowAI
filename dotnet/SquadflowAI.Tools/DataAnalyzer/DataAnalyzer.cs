@@ -21,14 +21,12 @@ namespace SquadflowAI.Tools.DataAnalyzer
                 _openAIAPIClient = openAIAPIClient;
             }
 
-            public async Task<string> ExecuteAsync(ToolConfigDto configs)
+            public async Task<ToolResponseDto> ExecuteAsync(ToolConfigDto configs)
             {
                 var configsForLLM = new RequestLLMDto();
                 configs.Inputs.TryGetValue("Name", out dynamic name);
                 configs.Inputs.TryGetValue("Description", out dynamic description);
                 configs.Inputs.TryGetValue("ActionToExecute", out dynamic actionToExecute);
-                configs.Inputs.TryGetValue("Inputs", out dynamic inputs);
-                configs.Inputs.TryGetValue("Outputs", out dynamic outputs);
                 configs.Inputs.TryGetValue("Data", out dynamic data);
 
                 // Generate dynamic system and user prompts based on the configuration JSON
@@ -39,8 +37,6 @@ namespace SquadflowAI.Tools.DataAnalyzer
                     Name: {name}
                     Description:  {description}
                     Action to Execute: {actionToExecute}
-                    Inputs:  {inputs}
-                    Outputs: {outputs}
 
                     Your job is to interpret the raw data provided by the user and generate clear and actionable insights as specified in the configuration. Be precise, concise, and accurate in your analysis.
                     ";
@@ -52,9 +48,6 @@ namespace SquadflowAI.Tools.DataAnalyzer
 
                     Based on the configuration, perform the following actions:
                     - {actionToExecute}
-
-                    Your response should include:
-                    - {string.Join("\n- ", outputs)}
 
                     
                 Strictly adhere to the following response format:
@@ -70,7 +63,13 @@ namespace SquadflowAI.Tools.DataAnalyzer
                 // Send the prompts to the LLM and await the response
                 var llmResponse = await _openAIAPIClient.SendMessageAsync(configsForLLM);
 
-                return llmResponse.Output;
+                var response = new ToolResponseDto()
+                {
+                    Data = llmResponse.Output,
+                    DataType = Contracts.Enums.ToolDataTypeEnum.String
+                };
+
+                return response;
             }
         }
     }

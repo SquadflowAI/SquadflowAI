@@ -1,110 +1,85 @@
 {
-    "name": "Football Stats Weekly Reporter",
-    "mission": "Gather football statistics from the internet, analyze trends, and deliver a detailed weekly report in PDF format via email.",
+    "name": "Football Stats Agent",
+    "mission": "Gather football statistics for Portugal for January 2025 from the internet, analyze trends, and deliver a detailed weekly report in PDF format via email.",
     "capabilities": [
         {
-            "task": "Search for football statistics",
+            "task": "Search for football statistics for Portugal for January 2025",
             "description": "Collect data on match results, player performance, team standings, and trends."
         },
         {
-            "task": "Analyze weekly data",
+            "task": "Analyze data",
             "description": "Identify trends, highlight key moments, and calculate performance metrics for players and teams."
         },
         {
             "task": "Generate PDF report",
-            "description": "Create a professional, well-structured report summarizing the week's football statistics and insights."
+            "description": "Create a professional, well-structured report summarizing football statistics and insights."
         },
         {
             "task": "Email report",
-            "description": "Send the PDF report to the user's email address every Sunday evening."
+            "description": "Send the PDF report to the user's email address."
         }
     ],
     "actions": [
         {
-            "name": "Search Football Stats",
-            "description": "Search the web for the latest football statistics from trusted sources.",
-            "action-to-execute": "Scrape match data, player statistics, and team standings from sports websites.",
-            "inputs": [
-                "Keywords related to football matches, players, and leagues"
-            ],
-            "outputs": [
-                "Raw football statistics data (JSON or CSV)"
-            ],
-            "triggers": [
-                "Scheduled every Monday to Saturday at 9:00 PM"
-            ],
+            "name": "Search Football Stats for Portugal for January 2025",
+            "description": "Search the web for the latest football statistics from trusted sources for Portugal for January 2025.",
+            "actionToExecute": "Scrape match data, player statistics, and team standings from sports websites.",
             "tools": [
-                {
-                    "name": "web-client",
-                    "description": "Connects to web APIs or scrapes public sports data from trusted websites."
-                }
+                    {
+                        "name": "serper-api",
+                        "description": "Google Search API, organic results data from Google Search.",
+                        "input": "search query in text format",
+                        "output": "url or urls"
+                    },
+                    {
+                        "name": "web-scraper",
+                        "description": "Scrapes a specific website page based on url provided",
+                        "input": "url",
+                        "output": "html of the page"
+                    }
             ]
         },
         {
             "name": "Analyze Weekly Data",
             "description": "Process and analyze the gathered data to identify key insights.",
-            "action-to-execute": "Calculate statistics such as top scorers, best players, and team standings; detect significant trends.",
-            "inputs": [
-                "Raw football statistics data"
-            ],
-            "outputs": [
-                "Summary insights and performance metrics"
-            ],
-            "triggers": [
-                "Scheduled every Sunday at 10:00 AM"
-            ],
+            "actionToExecute": "Calculate statistics such as top scorers, best players, and team standings; detect significant trends.",
             "tools": [
                 {
                     "name": "data-analyzer",
-                    "description": "Processes raw data and calculates performance metrics."
+                    "description": "Processes raw data and calculates performance metrics.",
+                    "input": "text",
+                    "output": "text"
                 }
             ]
         },
         {
-            "name": "Generate PDF Report",
-            "description": "Create a PDF summarizing weekly football statistics and insights.",
-            "action-to-execute": "Design and export a detailed PDF report with charts, tables, and written insights.",
-            "inputs": [
-                "Summary insights and performance metrics"
-            ],
-            "outputs": [
-                "PDF report"
-            ],
-            "triggers": [
-                "After completing 'Analyze Weekly Data' action"
-            ],
+            "name": "Design HTML and Generate PDF Report",
+            "description": "Create HTML and then PDF about football statistics and insights.",
+            "actionToExecute": "Design HTML and export a detailed PDF report with charts, tables, and written insights.",
             "tools": [
                 {
                     "name": "pdf-generator",
-                    "description": "Generates a professional PDF document from structured data."
+                    "description": "Generates a professional PDF document from structured data.",
+                    "input": "html",
+                    "output": "pdf"
                 }
             ]
         },
         {
             "name": "Email Report",
             "description": "Send the generated PDF report to the user's email.",
-            "action-to-execute": "Attach the PDF report to an email and send it to the specified address.",
-            "inputs": [
-                "PDF report"
-            ],
-            "outputs": [
-                "Sent email confirmation"
-            ],
-            "triggers": [
-                "After completing 'Generate PDF Report' action"
-            ],
+            "actionToExecute": "Attach the PDF report to an email and send it to the specified address.",
             "tools": [
                 {
                     "name": "gmail-client",
-                    "description": "Sends emails via Gmail API with attachments."
+                    "description": "Sends emails via Gmail API with attachment.",
+                    "input": "pdf",
+                    "recipientEmail": "test@test.com",
+                    "recipientName": "Test Test"
                 }
             ]
         }
     ],
-    "configuration": {
-        "email_recipient": "your-email@example.com",
-        "report_schedule": "Weekly on Sundays at 5:00 PM"
-    },
     "limitations": [
         "Relies on public sports websites; data availability may vary.",
         "Accuracy of analysis depends on data quality from trusted sources.",
