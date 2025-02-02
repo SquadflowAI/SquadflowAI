@@ -1,11 +1,17 @@
 <h2>SquadflowAI</h2>
 
-AI Agents builder and orchestrator
+AI Agents builder and orchestrator. Allows you just with a json file without wrting any code run an agent locally using any LLMs. The platform is agnostic to any LLM.
 
-<h2>Features</h2>
+<h2>Features and Concepts</h2>
 
-SquadflowAI eaither configures and runs AI Agent in run time or can scaffold separate Agent code for standalone execution
-
+SquadflowAI eaither configures and runs AI Agent in run time or can scaffold separate Agent code for standalone execution.
+There are 3 main buidling blocks of the platform:
+<h4>Agents</h4>
+The principal block of the platform, has context, goals and memory. Consists of multiple actions to achieve its final goal.
+<h4>Actions</h4>
+Performs the defined task. Has memory. Can recive inputs and generate outputs.
+<h4>Tools</h4>
+Tools are 3rd party tools and connectors that can be used by an action.  Can recive inputs and generate outputs.
 <h2>Getting Started<h2>
 
 <h3>Pre-requisites </h3>
