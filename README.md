@@ -1,5 +1,7 @@
 <h2>SquadflowAI</h2>
 
+AI Website builder + AI Agents orchestrator
+</br>
 AI Agents builder and orchestrator. Allows you just with a json file without wrting any code run an agent locally using any LLMs. The platform is agnostic to any LLM.
 
 <h2>Features and Concepts</h2>
