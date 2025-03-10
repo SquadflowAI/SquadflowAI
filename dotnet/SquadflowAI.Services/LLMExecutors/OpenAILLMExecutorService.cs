@@ -30,8 +30,8 @@ namespace SquadflowAI.Services.LLMExecutors
         {            
             var systemPrompt = GenerateSystemPrompt(agent.Name, agent.Mission, agent.Capabilities);
 
-            var test = new [] { "Email Report" };
-            agent.Actions = agent.Actions.Where(x => test.Contains(x.Name)).ToList();
+            //var test = new [] { "Email Report" };
+            //agent.Actions = agent.Actions.Where(x => test.Contains(x.Name)).ToList();
             //foreach (var action in agent.Actions)
             for (int ai = 0; ai < agent.Actions.Count; ai++)
             {

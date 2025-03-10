@@ -69,7 +69,8 @@ namespace SquadflowAI.Infrastructure.Repository
             SELECT a.bytedata
             FROM actionRun a
             WHERE a.name = @name 
-            AND a.agentname = @agentname";
+            AND a.agentname = @agentname
+            AND a.bytedata IS NOT NULL";
 
             var agentResult = await connection.QuerySingleOrDefaultAsync<byte[]>(actionRunQuery, new { name = actionName, agentname = agent });
 
