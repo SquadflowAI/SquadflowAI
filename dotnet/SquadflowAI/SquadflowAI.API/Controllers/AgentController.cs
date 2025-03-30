@@ -7,8 +7,6 @@ namespace SquadflowAI.API.Controllers
     [Route("[controller]")]
     public class AgentController : ControllerBase
     {
-        private readonly ILogger<WeatherForecastController> _logger;
-
         private readonly IAgentService _agentService;
 
         public AgentController(IAgentService agentService)

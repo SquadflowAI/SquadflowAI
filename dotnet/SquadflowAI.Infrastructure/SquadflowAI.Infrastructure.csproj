@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SquadflowAI.Contracts\SquadflowAI.Contracts.csproj" />
     <ProjectReference Include="..\SquadflowAI.Domain\SquadflowAI.Domain.csproj" />
   </ItemGroup>
 

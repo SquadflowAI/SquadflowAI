@@ -72,7 +72,7 @@ namespace SquadflowAI.Infrastructure
         }
     
 
-    public static string GenerateCreateTableQuery<T>(string tableName)
+     public static string GenerateCreateTableQuery<T>(string tableName)
         {
             var type = typeof(T);
             var properties = type.GetProperties();
@@ -99,7 +99,7 @@ namespace SquadflowAI.Infrastructure
             return queryBuilder.ToString();
         }
 
-        private static string GetPostgresType(Type type)
+     private static string GetPostgresType(Type type)
         {
             return type switch
             {
