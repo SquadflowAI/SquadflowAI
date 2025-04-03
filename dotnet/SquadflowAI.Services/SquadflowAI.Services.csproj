@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SquadflowAI.Domain\SquadflowAI.Domain.csproj" />
+    <ProjectReference Include="..\SquadflowAI.Infrastructure\SquadflowAI.Infrastructure.csproj" />
+    <ProjectReference Include="..\SquadflowAI.LLMConnector\SquadflowAI.LLMConnector.csproj" />
+    <ProjectReference Include="..\SquadflowAI.Tools\SquadflowAI.Tools.csproj" />
+  </ItemGroup>
+
+</Project>

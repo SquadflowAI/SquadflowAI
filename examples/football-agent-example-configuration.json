@@ -1,0 +1,88 @@
+{
+    "name": "Football Stats Agent",
+    "mission": "Gather football statistics for Portugal for January 2025 from the internet, analyze trends, and deliver a detailed weekly report in PDF format via email.",
+    "capabilities": [
+        {
+            "task": "Search for football statistics for Portugal for January 2025",
+            "description": "Collect data on match results, player performance, team standings, and trends."
+        },
+        {
+            "task": "Analyze data",
+            "description": "Identify trends, highlight key moments, and calculate performance metrics for players and teams."
+        },
+        {
+            "task": "Generate PDF report",
+            "description": "Create a professional, well-structured report summarizing football statistics and insights."
+        },
+        {
+            "task": "Email report",
+            "description": "Send the PDF report to the user's email address."
+        }
+    ],
+    "actions": [
+        {
+            "name": "Search Football Stats for Portugal for January 2025",
+            "description": "Search the web for the latest football statistics from trusted sources for Portugal for January 2025.",
+            "actionToExecute": "Scrape match data, player statistics, and team standings from sports websites.",
+            "tools": [
+                    {
+                        "name": "serper-api",
+                        "description": "Google Search API, organic results data from Google Search.",
+                        "input": "search query in text format",
+                        "output": "url or urls"
+                    },
+                    {
+                        "name": "web-scraper",
+                        "description": "Scrapes a specific website page based on url provided",
+                        "input": "url",
+                        "output": "html of the page"
+                    }
+            ]
+        },
+        {
+            "name": "Analyze Weekly Data",
+            "description": "Process and analyze the gathered data to identify key insights.",
+            "actionToExecute": "Calculate statistics such as top scorers, best players, and team standings; detect significant trends.",
+            "tools": [
+                {
+                    "name": "data-analyzer",
+                    "description": "Processes raw data and calculates performance metrics.",
+                    "input": "text",
+                    "output": "text"
+                }
+            ]
+        },
+        {
+            "name": "Design HTML and Generate PDF Report",
+            "description": "Create HTML and then PDF about football statistics and insights.",
+            "actionToExecute": "Design HTML and export a detailed PDF report with charts, tables, and written insights.",
+            "tools": [
+                {
+                    "name": "pdf-generator",
+                    "description": "Generates a professional PDF document from structured data.",
+                    "input": "html",
+                    "output": "pdf"
+                }
+            ]
+        },
+        {
+            "name": "Email Report",
+            "description": "Send the generated PDF report to the user's email.",
+            "actionToExecute": "Attach the PDF report to an email and send it to the specified address.",
+            "tools": [
+                {
+                    "name": "gmail-client",
+                    "description": "Sends emails via Gmail API with attachment.",
+                    "input": "pdf",
+                    "recipientEmail": "test@test.com",
+                    "recipientName": "Test Test"
+                }
+            ]
+        }
+    ],
+    "limitations": [
+        "Relies on public sports websites; data availability may vary.",
+        "Accuracy of analysis depends on data quality from trusted sources.",
+        "Email delivery depends on internet connectivity and Gmail API availability."
+    ]
+}
