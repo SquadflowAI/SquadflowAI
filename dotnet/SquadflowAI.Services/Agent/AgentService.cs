@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
+using SquadflowAI.Contracts.Tools;
 using SquadflowAI.Domain;
 using SquadflowAI.Infrastructure.Interfaces;
+using SquadflowAI.Infrastructure.Repository;
 using SquadflowAI.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -13,10 +15,10 @@ namespace SquadflowAI.Services.Agent
 {
     public class AgentService : IAgentService
     {
-        private IAgentRepository _agentConfigurationRepository;
+        private IAgentRepository _agentRepository;
         public AgentService(IAgentRepository agentConfigurationRepository) 
         {
-            _agentConfigurationRepository = agentConfigurationRepository;
+            _agentRepository = agentConfigurationRepository;
         }
 
         public async Task CreateAgentAsync()
@@ -41,12 +43,12 @@ namespace SquadflowAI.Services.Agent
             Domain.Agent agent = JsonConvert.DeserializeObject<Domain.Agent>(fileContent, settings);
 
             // Save agent
-            await _agentConfigurationRepository.CreateAgentAsync(agent);
+            await _agentRepository.CreateAgentAsync(agent);
         }
 
         public async Task<Domain.Agent> GetAgentByNameAsync(string agentName)
         {
-            var result = await _agentConfigurationRepository.GetAgentByNameAsync(agentName);
+            var result = await _agentRepository.GetAgentByNameAsync(agentName);
 
             return result;
         }
@@ -59,6 +61,13 @@ namespace SquadflowAI.Services.Agent
             // Generate System Promt
             // Get Tools
             // Call LLM
+        }
+
+        public async Task<IEnumerable<Domain.Agent>> GetAgentAsync()
+        {
+            var result = await _agentRepository.GetAgentAsync();
+
+            return result;
         }
     }
 }

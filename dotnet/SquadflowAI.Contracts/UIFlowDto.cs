@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SquadflowAI.Contracts.Dtos
 {
-    public class UIOrchestrationDto
+    public class UIFlowDto
     {
         public string? Id { get; set; }
         public string? Name { get; set; }

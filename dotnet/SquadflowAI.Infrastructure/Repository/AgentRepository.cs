@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Newtonsoft.Json;
 using Npgsql;
+using SquadflowAI.Contracts.Tools;
 using SquadflowAI.Domain;
 using SquadflowAI.Infrastructure.Interfaces;
 using System.Collections;
@@ -47,6 +48,23 @@ namespace SquadflowAI.Infrastructure.Repository
             var result = JsonConvert.DeserializeObject<Agent>(agentResult);
 
             return result;
+        }
+
+        public async Task<IEnumerable<Agent>> GetAgentAsync()
+        {
+            using var connection = _dbContext.CreateConnection();
+            connection.Open();
+
+            var agentsQuery = @"
+            SELECT a.name
+            FROM agents a";
+
+            IEnumerable<Agent> agentsQueryResult = await connection.QueryAsync<Agent>(agentsQuery);
+
+            if (agentsQueryResult == null)
+                return null;
+
+            return agentsQueryResult;
         }
 
     }

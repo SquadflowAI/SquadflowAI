@@ -16,7 +16,7 @@ namespace SquadflowAI.API.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<IActionResult> GetUIOrchestrations()
+        public async Task<IActionResult> GetUIFlows()
         {
             var tools = await _toolsService.GetToolsAsync();
             if (tools == null)

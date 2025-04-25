@@ -63,13 +63,13 @@ builder.Services.AddTransient<ITool, GmailClient>();
 
 builder.Services.AddSingleton<DbContext>();
 builder.Services.AddTransient<DatabaseInitializer>();
-builder.Services.AddTransient<IUIOrchestrationService, UIOrchestrationService>();
+builder.Services.AddTransient<IUIFlowService, UIFlowService>();
 builder.Services.AddTransient<IAgentService, AgentService>();
 builder.Services.AddTransient<IOpenAILLMExecutorService, OpenAILLMExecutorService>();
 builder.Services.AddTransient<IToolsService, ToolsService>(); 
 
 // Repositories
-builder.Services.AddScoped<IUIOrchestrationRepository, UIOrchestrationRepository>();
+builder.Services.AddScoped<IUIFlowRepository, UIFlowRepository>();
 builder.Services.AddScoped<IAgentRepository, AgentRepository>();
 builder.Services.AddScoped<IActionRunRepository, ActionRunRepository>(); 
 builder.Services.AddScoped<IToolsRepository, ToolsRepository>();

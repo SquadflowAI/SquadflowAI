@@ -10,7 +10,7 @@ namespace SquadflowAI.Services.Interfaces
     public interface IAgentService
     {
         Task CreateAgentAsync();
-
         Task<Domain.Agent> GetAgentByNameAsync(string agentName);
+        Task<IEnumerable<Domain.Agent>> GetAgentAsync();
     }
 }

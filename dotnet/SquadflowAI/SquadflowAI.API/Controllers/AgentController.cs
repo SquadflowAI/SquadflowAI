@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SquadflowAI.Services.Interfaces;
+using SquadflowAI.Services.Services;
 
 namespace SquadflowAI.API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AgentController : ControllerBase
     {
         private readonly IAgentService _agentService;
@@ -30,6 +31,17 @@ namespace SquadflowAI.API.Controllers
                 return NotFound();
             }
             return Ok(agent);
+        }
+
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAgents()
+        {
+            var tools = await _agentService.GetAgentAsync();
+            if (tools == null)
+            {
+                return NotFound();
+            }
+            return Ok(tools);
         }
 
         //[HttpPost("run/{agentName}")]

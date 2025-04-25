@@ -41,12 +41,19 @@ namespace SquadflowAI.Infrastructure
                 AND table_name = 'tools'
             );";
 
-            const string createTableQueryAgents = @"CREATE TABLE agents (
+            const string checkTableUIFlowsQuery = @"
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables 
+                WHERE table_schema = 'public' 
+                AND table_name = 'uiflows'
+            );";
+
+            const string createTableAgents = @"CREATE TABLE agents (
                                     id SERIAL PRIMARY KEY,
                                     name VARCHAR(255),
                                     data JSONB);";
 
-            const string createTableQueryActionRun = @"CREATE TABLE actionRun (
+            const string createTableActionRun = @"CREATE TABLE actionRun (
                                     id SERIAL PRIMARY KEY,
                                     agentName VARCHAR(255),
                                     name VARCHAR(255),
@@ -54,33 +61,39 @@ namespace SquadflowAI.Infrastructure
                                     data TEXT,
                                     bytedata BYTEA);";
 
-            const string createTableQueryTools = @"CREATE TABLE tools (
+            const string createTableTools = @"CREATE TABLE tools (
                                     id SERIAL PRIMARY KEY,
                                     name VARCHAR(255),
                                     key VARCHAR(255));";
+
+            const string createTableUIFlows = @"CREATE TABLE uiflows (
+                                    id SERIAL PRIMARY KEY,
+                                    name VARCHAR(255),
+                                    data JSONB);";
 
             using var connection = _dbContext.CreateConnection();
 
             // Check if the table exists
             bool tableExistsAgents = connection.ExecuteScalar<bool>(checkTableAgentsQuery);
             bool tableExistsActionRun = connection.ExecuteScalar<bool>(checkTableActionRunQuery);
-            bool tableExistsToolsRun = connection.ExecuteScalar<bool>(checkTableToolsRunQuery);
+            bool tableExistsTools = connection.ExecuteScalar<bool>(checkTableToolsRunQuery);
+            bool tableExistsUIFlows = connection.ExecuteScalar<bool>(checkTableUIFlowsQuery);
 
             if (!tableExistsAgents)
             {
                 // Create the table if it doesn't exist
-                connection.Execute(createTableQueryAgents);
+                connection.Execute(createTableAgents);
  
                 Console.WriteLine("Table 'Agents' has been created.");
             }else if (!tableExistsActionRun)
             {
-                connection.Execute(createTableQueryActionRun);
+                connection.Execute(createTableActionRun);
 
                 Console.WriteLine("Table 'ActionRun' has been created.");
             }
-            else if (!tableExistsToolsRun)
+            else if (!tableExistsTools)
             {
-                connection.Execute(createTableQueryTools);
+                connection.Execute(createTableTools);
 
                 connection.Execute(@"INSERT INTO tools (name, key) VALUES 
                                 ('Data Analyzer', 'data-analyzer'), 
@@ -90,6 +103,13 @@ namespace SquadflowAI.Infrastructure
                                 ('Web Scraper','web-scraper');");
 
                 Console.WriteLine("Table 'ActionRun' has been created.");
+            }
+            else if (!tableExistsUIFlows)
+            {
+                // Create the table if it doesn't exist
+                connection.Execute(createTableUIFlows);
+
+                Console.WriteLine("Table 'Agents' has been created.");
             }
             else
             {
