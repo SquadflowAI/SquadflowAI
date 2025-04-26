@@ -66,13 +66,15 @@ builder.Services.AddTransient<DatabaseInitializer>();
 builder.Services.AddTransient<IUIFlowService, UIFlowService>();
 builder.Services.AddTransient<IAgentService, AgentService>();
 builder.Services.AddTransient<IOpenAILLMExecutorService, OpenAILLMExecutorService>();
-builder.Services.AddTransient<IToolsService, ToolsService>(); 
+builder.Services.AddTransient<IToolsService, ToolsService>();
+builder.Services.AddTransient<IProjectsService, ProjectsService>();
 
 // Repositories
 builder.Services.AddScoped<IUIFlowRepository, UIFlowRepository>();
 builder.Services.AddScoped<IAgentRepository, AgentRepository>();
 builder.Services.AddScoped<IActionRunRepository, ActionRunRepository>(); 
 builder.Services.AddScoped<IToolsRepository, ToolsRepository>();
+builder.Services.AddScoped<IProjectsRepository, ProjectsRepository>();
 
 //builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>

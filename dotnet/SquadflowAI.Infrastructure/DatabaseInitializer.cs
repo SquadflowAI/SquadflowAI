@@ -48,6 +48,13 @@ namespace SquadflowAI.Infrastructure
                 AND table_name = 'uiflows'
             );";
 
+            const string checkTableProjectsQuery = @"
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables 
+                WHERE table_schema = 'public' 
+                AND table_name = 'projects'
+            );";
+
             const string createTableAgents = @"CREATE TABLE agents (
                                     id SERIAL PRIMARY KEY,
                                     name VARCHAR(255),
@@ -71,6 +78,12 @@ namespace SquadflowAI.Infrastructure
                                     name VARCHAR(255),
                                     data JSONB);";
 
+            const string createTableProjects = @"CREATE TABLE projects (
+                                    id SERIAL PRIMARY KEY,
+                                    name VARCHAR(255),
+                                    createdDate TIMESTAMP,
+                                    updatedDate TIMESTAMP);";
+
             using var connection = _dbContext.CreateConnection();
 
             // Check if the table exists
@@ -78,6 +91,7 @@ namespace SquadflowAI.Infrastructure
             bool tableExistsActionRun = connection.ExecuteScalar<bool>(checkTableActionRunQuery);
             bool tableExistsTools = connection.ExecuteScalar<bool>(checkTableToolsRunQuery);
             bool tableExistsUIFlows = connection.ExecuteScalar<bool>(checkTableUIFlowsQuery);
+            bool tableExistsProjects = connection.ExecuteScalar<bool>(checkTableProjectsQuery);
 
             if (!tableExistsAgents)
             {
@@ -111,9 +125,16 @@ namespace SquadflowAI.Infrastructure
 
                 Console.WriteLine("Table 'Agents' has been created.");
             }
+            else if (!tableExistsProjects)
+            {
+                // Create the table if it doesn't exist
+                connection.Execute(createTableProjects);
+
+                Console.WriteLine("Table 'Projects' has been created.");
+            }
             else
             {
-                Console.WriteLine("Table 'Agents' already exists.");
+                Console.WriteLine("No new tables to create.");
             }
         }
     
