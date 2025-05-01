@@ -20,6 +20,8 @@ namespace SquadflowAI.Infrastructure
 
         public void EnsureDatabaseSetup()
         {
+            //CHECK
+
             const string checkTableAgentsQuery = @"
             SELECT EXISTS (
                 SELECT FROM information_schema.tables 
@@ -55,13 +57,22 @@ namespace SquadflowAI.Infrastructure
                 AND table_name = 'projects'
             );";
 
+            const string checkTableUsersQuery = @"
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables 
+                WHERE table_schema = 'public' 
+                AND table_name = 'users'
+            );";
+
+            //CREATE
+
             const string createTableAgents = @"CREATE TABLE agents (
-                                    id SERIAL PRIMARY KEY,
+                                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                                     name VARCHAR(255),
                                     data JSONB);";
 
             const string createTableActionRun = @"CREATE TABLE actionRun (
-                                    id SERIAL PRIMARY KEY,
+                                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                                     agentName VARCHAR(255),
                                     name VARCHAR(255),
                                     date TIMESTAMP,
@@ -69,18 +80,26 @@ namespace SquadflowAI.Infrastructure
                                     bytedata BYTEA);";
 
             const string createTableTools = @"CREATE TABLE tools (
-                                    id SERIAL PRIMARY KEY,
+                                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                                     name VARCHAR(255),
                                     key VARCHAR(255));";
 
             const string createTableUIFlows = @"CREATE TABLE uiflows (
-                                    id SERIAL PRIMARY KEY,
+                                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                                     name VARCHAR(255),
                                     data JSONB);";
 
             const string createTableProjects = @"CREATE TABLE projects (
-                                    id SERIAL PRIMARY KEY,
+                                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                                     name VARCHAR(255),
+                                    createdDate TIMESTAMP,
+                                    updatedDate TIMESTAMP);";
+
+            const string createTableUsers = @"CREATE TABLE users (
+                                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                                    name VARCHAR(255),
+                                    email VARCHAR(255),
+                                    password VARCHAR(255),
                                     createdDate TIMESTAMP,
                                     updatedDate TIMESTAMP);";
 
@@ -92,54 +111,60 @@ namespace SquadflowAI.Infrastructure
             bool tableExistsTools = connection.ExecuteScalar<bool>(checkTableToolsRunQuery);
             bool tableExistsUIFlows = connection.ExecuteScalar<bool>(checkTableUIFlowsQuery);
             bool tableExistsProjects = connection.ExecuteScalar<bool>(checkTableProjectsQuery);
+            bool tableExistsUsers = connection.ExecuteScalar<bool>(checkTableUsersQuery);
 
             if (!tableExistsAgents)
             {
-                // Create the table if it doesn't exist
                 connection.Execute(createTableAgents);
- 
                 Console.WriteLine("Table 'Agents' has been created.");
-            }else if (!tableExistsActionRun)
+            }
+
+            if (!tableExistsActionRun)
             {
                 connection.Execute(createTableActionRun);
-
                 Console.WriteLine("Table 'ActionRun' has been created.");
             }
-            else if (!tableExistsTools)
+
+            if (!tableExistsTools)
             {
                 connection.Execute(createTableTools);
-
                 connection.Execute(@"INSERT INTO tools (name, key) VALUES 
-                                ('Data Analyzer', 'data-analyzer'), 
-                                ('Gmail Client', 'gmail-client'), 
-                                ('Pdf Generator', 'pdf-generator'),
-                                ('Serper API', 'serper-api'), 
-                                ('Web Scraper','web-scraper');");
-
-                Console.WriteLine("Table 'ActionRun' has been created.");
+                   ('Data Analyzer', 'data-analyzer'), 
+                   ('Gmail Client', 'gmail-client'), 
+                   ('Pdf Generator', 'pdf-generator'),
+                   ('Serper API', 'serper-api'), 
+                   ('Web Scraper','web-scraper');");
+                Console.WriteLine("Table 'Tools' has been created.");
             }
-            else if (!tableExistsUIFlows)
+
+            if (!tableExistsUIFlows)
             {
-                // Create the table if it doesn't exist
                 connection.Execute(createTableUIFlows);
-
-                Console.WriteLine("Table 'Agents' has been created.");
+                Console.WriteLine("Table 'UIFlows' has been created.");
             }
-            else if (!tableExistsProjects)
-            {
-                // Create the table if it doesn't exist
-                connection.Execute(createTableProjects);
 
+            if (!tableExistsProjects)
+            {
+                connection.Execute(createTableProjects);
                 Console.WriteLine("Table 'Projects' has been created.");
             }
-            else
+
+            if (!tableExistsUsers)
+            {
+                connection.Execute(createTableUsers);
+                Console.WriteLine("Table 'Users' has been created.");
+            }
+
+            if (tableExistsAgents && tableExistsActionRun && tableExistsTools &&
+                tableExistsUIFlows && tableExistsProjects && tableExistsUsers)
             {
                 Console.WriteLine("No new tables to create.");
             }
-        }
-    
 
-     public static string GenerateCreateTableQuery<T>(string tableName)
+        }
+
+
+        public static string GenerateCreateTableQuery<T>(string tableName)
         {
             var type = typeof(T);
             var properties = type.GetProperties();

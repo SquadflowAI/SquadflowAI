@@ -68,6 +68,7 @@ builder.Services.AddTransient<IAgentService, AgentService>();
 builder.Services.AddTransient<IOpenAILLMExecutorService, OpenAILLMExecutorService>();
 builder.Services.AddTransient<IToolsService, ToolsService>();
 builder.Services.AddTransient<IProjectsService, ProjectsService>();
+builder.Services.AddTransient<IUserService, UserService>();
 
 // Repositories
 builder.Services.AddScoped<IUIFlowRepository, UIFlowRepository>();
@@ -75,6 +76,7 @@ builder.Services.AddScoped<IAgentRepository, AgentRepository>();
 builder.Services.AddScoped<IActionRunRepository, ActionRunRepository>(); 
 builder.Services.AddScoped<IToolsRepository, ToolsRepository>();
 builder.Services.AddScoped<IProjectsRepository, ProjectsRepository>();
+builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 
 //builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>

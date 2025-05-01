@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SquadflowAI.Contracts.Dtos
+namespace SquadflowAI.Contracts.User
 {
-    public class UIFlowDto
+    public class UserDto
     {
         public Guid? Id { get; set; }
         public string? Name { get; set; }
-        public IEnumerable<UIAgentNodeDto>? Nodes {get; set;}
-        public IEnumerable<UIAgentNodeConnectionDto>? Connections {get;set;}
+        public string? Email { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
     }
 }

@@ -26,4 +26,8 @@
     <ProjectReference Include="..\..\SquadflowAI.Services\SquadflowAI.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Automapper\" />
+  </ItemGroup>
+
 </Project>
