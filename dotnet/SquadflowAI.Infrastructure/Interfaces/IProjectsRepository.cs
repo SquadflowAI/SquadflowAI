@@ -13,5 +13,6 @@ namespace SquadflowAI.Infrastructure.Interfaces
         Task CreateProjectAsync(Project flow);
         Task<Project> GetProjectByNameAsync(string name);
         Task<IEnumerable<Project>> GetProjectsAsync();
+        Task<IEnumerable<Project>> GetProjectsByUserIdAsync(Guid userId);
     }
 }

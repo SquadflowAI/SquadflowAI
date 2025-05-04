@@ -39,5 +39,12 @@ namespace SquadflowAI.Services.Services
 
             return result;
         }
+
+        public async Task<IEnumerable<Project>> GetProjectsByUserIdAsync(Guid userId)
+        {
+            var result = await _projectsRepository.GetProjectsByUserIdAsync(userId);
+
+            return result;
+        }
     }
 }

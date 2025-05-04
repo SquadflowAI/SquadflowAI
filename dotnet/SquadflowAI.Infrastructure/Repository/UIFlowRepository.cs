@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Newtonsoft.Json;
 using SquadflowAI.Contracts.Dtos;
+using SquadflowAI.Domain;
 using SquadflowAI.Infrastructure.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -24,8 +25,9 @@ namespace SquadflowAI.Infrastructure.Repository
             connection.Open();
 
             var data = JsonConvert.SerializeObject(flow);
-            var uiflowQuery = "INSERT INTO uiflows (name, data) VALUES (@name, @data::jsonb)";
-            await connection.ExecuteAsync(uiflowQuery, new { flow.Name, data });
+            var uiflowQuery = "INSERT INTO uiflows (name, projectId, data) VALUES (@name, @projectId, @data::jsonb)";
+
+            await connection.ExecuteAsync(uiflowQuery, new { flow.Name, flow.ProjectId, data });
         }
 
         public async Task<UIFlowDto> GetUIFlowByNameAsync(string inputName)
@@ -57,22 +59,29 @@ namespace SquadflowAI.Infrastructure.Repository
             SELECT a.data
             FROM uiflows a";
 
-            IEnumerable<string> uiflowQueryResult = await connection.QueryAsync<string>(uiflowQuery);
+            IEnumerable<UIFlowDto> uiflowQueryResult = await connection.QueryAsync<UIFlowDto>(uiflowQuery);
 
             if (uiflowQueryResult == null)
                 return null;
 
-            List<UIFlowDto> finalResult = new List<UIFlowDto>();
-            foreach (var item in uiflowQueryResult)
-            {
-                var result = JsonConvert.DeserializeObject<UIFlowDto>(item);
+            return uiflowQueryResult.ToList();
+        }
 
-                finalResult.Add(result);
-            }
+        public async Task<IEnumerable<UIFlowDto>> GetUIFlowsByProjectIdAsync(Guid projectId)
+        {
+            using var connection = _dbContext.CreateConnection();
+            connection.Open();
 
-            
+            var uiflowQuery = @"
+            SELECT *
+            FROM uiflows a WHERE a.projectId = @projectId";
 
-            return finalResult;
+            IEnumerable<UIFlowDto> projectsQueryResult = await connection.QueryAsync<UIFlowDto>(uiflowQuery, new { projectId = projectId });
+
+            if (projectsQueryResult == null)
+                return null;
+
+            return projectsQueryResult.ToList();
         }
     }
 }

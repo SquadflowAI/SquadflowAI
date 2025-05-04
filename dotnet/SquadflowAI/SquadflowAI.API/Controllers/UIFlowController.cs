@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SquadflowAI.Contracts.Dtos;
 using SquadflowAI.Services.Interfaces;
+using SquadflowAI.Services.Services;
 
 namespace SquadflowAI.API.Controllers
 {
@@ -43,6 +44,20 @@ namespace SquadflowAI.API.Controllers
                 return NotFound();
             }
             return Ok(uiflow);
+        }
+
+        [HttpGet("all/{projectId}")]
+        public async Task<IActionResult> GetProjectsByUserId(string projectId)
+        {
+            var userGuidId = new Guid(projectId);
+            var uiflows = await _iUIFlowService.GetUIFlowsByProjectIdAsync(userGuidId);
+
+            if (uiflows == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(uiflows);
         }
     }
 }

@@ -45,5 +45,17 @@ namespace SquadflowAI.API.Controllers
             }
             return Ok(projects);
         }
+
+        [HttpGet("all/{userId}")]
+        public async Task<IActionResult> GetProjectsByUserId(string userId)
+        {
+            var userGuidId = new Guid(userId);
+            var projects = await _projectService.GetProjectsByUserIdAsync(userGuidId);
+            if (projects == null)
+            {
+                return NotFound();
+            }
+            return Ok(projects);
+        }
     }
 }

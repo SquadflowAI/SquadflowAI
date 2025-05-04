@@ -1,5 +1,7 @@
 ﻿using SquadflowAI.Contracts.Dtos;
+using SquadflowAI.Domain;
 using SquadflowAI.Infrastructure.Interfaces;
+using SquadflowAI.Infrastructure.Repository;
 using SquadflowAI.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -32,6 +34,13 @@ namespace SquadflowAI.Services.Services
         public async Task<IEnumerable<UIFlowDto>> GetUIFlowsAsync()
         {
             var result = await _uIFlowRepository.GetUIFlowsAsync();
+
+            return result;
+        }
+
+        public async Task<IEnumerable<UIFlowDto>> GetUIFlowsByProjectIdAsync(Guid projectId)
+        {
+            var result = await _uIFlowRepository.GetUIFlowsByProjectIdAsync(projectId);
 
             return result;
         }

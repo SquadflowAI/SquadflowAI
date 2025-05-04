@@ -24,8 +24,11 @@ namespace SquadflowAI.Infrastructure.Repository
             using var connection = _dbContext.CreateConnection();
             connection.Open();
 
-            var projectsQuery = "INSERT INTO projects (name, createdDate, updatedDate) VALUES (@name, @createdDate, @updatedDate)";
-            await connection.ExecuteAsync(projectsQuery, new { project.Name, project.CreatedDate, project.UpdatedDate });
+            var projectsQuery = @"INSERT INTO projects 
+            (userId, name, createdDate, updatedDate) 
+            VALUES (@userId, @name, @createdDate, @updatedDate)";
+            await connection.ExecuteAsync(projectsQuery, new {project.UserId,
+                project.Name, project.CreatedDate, project.UpdatedDate });
         }
 
         public async Task<Project> GetProjectByNameAsync(string inputName)
@@ -62,13 +65,22 @@ namespace SquadflowAI.Infrastructure.Repository
             if (projectsQueryResult == null)
                 return null;
 
-            //List<Project> finalResult = new List<Project>();
-            //foreach (var item in projectsQueryResult)
-            //{
-            //    var result = JsonConvert.DeserializeObject<Project>(item);
+            return projectsQueryResult.ToList();
+        }
 
-            //    finalResult.Add(result);
-            //}
+        public async Task<IEnumerable<Project>> GetProjectsByUserIdAsync(Guid userId)
+        {
+            using var connection = _dbContext.CreateConnection();
+            connection.Open();
+
+            var uiflowQuery = @"
+            SELECT *
+            FROM projects a WHERE a.userid = @userId";
+
+            IEnumerable<Project> projectsQueryResult = await connection.QueryAsync<Project>(uiflowQuery, new { userId = userId});
+
+            if (projectsQueryResult == null)
+                return null;
 
             return projectsQueryResult.ToList();
         }

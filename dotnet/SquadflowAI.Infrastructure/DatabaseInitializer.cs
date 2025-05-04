@@ -84,17 +84,6 @@ namespace SquadflowAI.Infrastructure
                                     name VARCHAR(255),
                                     key VARCHAR(255));";
 
-            const string createTableUIFlows = @"CREATE TABLE uiflows (
-                                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                                    name VARCHAR(255),
-                                    data JSONB);";
-
-            const string createTableProjects = @"CREATE TABLE projects (
-                                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                                    name VARCHAR(255),
-                                    createdDate TIMESTAMP,
-                                    updatedDate TIMESTAMP);";
-
             const string createTableUsers = @"CREATE TABLE users (
                                     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                                     name VARCHAR(255),
@@ -102,6 +91,23 @@ namespace SquadflowAI.Infrastructure
                                     password VARCHAR(255),
                                     createdDate TIMESTAMP,
                                     updatedDate TIMESTAMP);";
+
+            const string createTableProjects = @"CREATE TABLE projects (
+                                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                                    userId UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                                    name VARCHAR(255),
+                                    createdDate TIMESTAMP,
+                                    updatedDate TIMESTAMP);";
+
+            const string createTableUIFlows = @"CREATE TABLE uiflows (
+                                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                                    projectId UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+                                    name VARCHAR(255),
+                                    data JSONB);";
+
+
+
+
 
             using var connection = _dbContext.CreateConnection();
 
@@ -137,10 +143,10 @@ namespace SquadflowAI.Infrastructure
                 Console.WriteLine("Table 'Tools' has been created.");
             }
 
-            if (!tableExistsUIFlows)
+            if (!tableExistsUsers)
             {
-                connection.Execute(createTableUIFlows);
-                Console.WriteLine("Table 'UIFlows' has been created.");
+                connection.Execute(createTableUsers);
+                Console.WriteLine("Table 'Users' has been created.");
             }
 
             if (!tableExistsProjects)
@@ -149,10 +155,10 @@ namespace SquadflowAI.Infrastructure
                 Console.WriteLine("Table 'Projects' has been created.");
             }
 
-            if (!tableExistsUsers)
+            if (!tableExistsUIFlows)
             {
-                connection.Execute(createTableUsers);
-                Console.WriteLine("Table 'Users' has been created.");
+                connection.Execute(createTableUIFlows);
+                Console.WriteLine("Table 'UIFlows' has been created.");
             }
 
             if (tableExistsAgents && tableExistsActionRun && tableExistsTools &&
