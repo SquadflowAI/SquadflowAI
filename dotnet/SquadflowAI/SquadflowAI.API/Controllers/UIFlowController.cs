@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SquadflowAI.Contracts.Dtos;
+using SquadflowAI.Domain;
 using SquadflowAI.Services.Interfaces;
 using SquadflowAI.Services.Services;
 
@@ -24,10 +25,29 @@ namespace SquadflowAI.API.Controllers
             return Ok();
         }
 
+        [HttpPost("update")]
+        public async Task<IActionResult> UpdateUIFlow([FromBody] UIFlowDto body)
+        {
+            await _iUIFlowService.UpdateUIFlowAsync(body);
+            return Ok();
+        }
+
         [HttpGet("{flowName}")]
         public async Task<IActionResult> GetUIFlowByName(string flowName)
         {
             var uiflow = await _iUIFlowService.GetUIFlowByNameAsync(flowName);
+            if (uiflow == null)
+            {
+                return NotFound();
+            }
+            return Ok(uiflow);
+        }
+
+        [HttpGet("id/{id}")]
+        public async Task<IActionResult> GetUIFlowById(string id)
+        {
+            var flowId = new Guid(id);
+            var uiflow = await _iUIFlowService.GetUIFlowByIdAsync(flowId);
             if (uiflow == null)
             {
                 return NotFound();
@@ -46,7 +66,7 @@ namespace SquadflowAI.API.Controllers
             return Ok(uiflow);
         }
 
-        [HttpGet("all/{projectId}")]
+        [HttpGet("project-id/{projectId}")]
         public async Task<IActionResult> GetProjectsByUserId(string projectId)
         {
             var userGuidId = new Guid(projectId);

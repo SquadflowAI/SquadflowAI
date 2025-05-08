@@ -46,7 +46,7 @@ namespace SquadflowAI.API.Controllers
             return Ok(projects);
         }
 
-        [HttpGet("all/{userId}")]
+        [HttpGet("user-id/{userId}")]
         public async Task<IActionResult> GetProjectsByUserId(string userId)
         {
             var userGuidId = new Guid(userId);

@@ -24,9 +24,21 @@ namespace SquadflowAI.Services.Services
             await _uIFlowRepository.CreateUIFlowAsync(uiflow);
         }
 
+        public async Task UpdateUIFlowAsync(UIFlowDto uiflow)
+        {
+            await _uIFlowRepository.UpdateUIFlowAsync(uiflow);
+        }
+
         public async Task<UIFlowDto> GetUIFlowByNameAsync(string name)
         {
             var result = await _uIFlowRepository.GetUIFlowByNameAsync(name);
+
+            return result;
+        }
+
+        public async Task<UIFlowDto> GetUIFlowByIdAsync(Guid id)
+        {
+            var result = await _uIFlowRepository.GetUIFlowByIdAsync(id);
 
             return result;
         }

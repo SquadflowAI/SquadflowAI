@@ -10,7 +10,7 @@ namespace SquadflowAI.Contracts.Dtos
     {
         public string? Id { get; set; }
         public string? Name {get; set;}
-        public int PositionX { get; set;}
-        public int PositionY { get; set;}
+        public decimal PositionX { get; set;}
+        public decimal PositionY { get; set;}
     }
 }

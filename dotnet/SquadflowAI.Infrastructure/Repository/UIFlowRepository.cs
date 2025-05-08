@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace SquadflowAI.Infrastructure.Repository
 {
@@ -30,6 +31,20 @@ namespace SquadflowAI.Infrastructure.Repository
             await connection.ExecuteAsync(uiflowQuery, new { flow.Name, flow.ProjectId, data });
         }
 
+        public async Task UpdateUIFlowAsync(UIFlowDto flow)
+        {
+            using var connection = _dbContext.CreateConnection();
+            connection.Open();
+
+            var data = JsonConvert.SerializeObject(flow);
+            var uiflowQuery = @"UPDATE uiflows
+                                    SET name = @name,
+                                        data = @data::jsonb
+                                    WHERE id = @id;";
+
+            await connection.ExecuteAsync(uiflowQuery, new { name = flow.Name, data = data, id = flow.Id });
+        }
+
         public async Task<UIFlowDto> GetUIFlowByNameAsync(string inputName)
         {
             using var connection = _dbContext.CreateConnection();
@@ -41,6 +56,26 @@ namespace SquadflowAI.Infrastructure.Repository
             WHERE a.name = @inputName";
 
             string uiflowQueryResult = await connection.QuerySingleOrDefaultAsync<string>(uiflowQuery, new { inputName = inputName });
+
+            if (uiflowQueryResult == null)
+                return null;
+
+            var result = JsonConvert.DeserializeObject<UIFlowDto>(uiflowQueryResult);
+
+            return result;
+        }
+
+        public async Task<UIFlowDto> GetUIFlowByIdAsync(Guid id)
+        {
+            using var connection = _dbContext.CreateConnection();
+            connection.Open();
+
+            var uiflowQuery = @"
+            SELECT a.data
+            FROM uiflows a
+            WHERE a.id = @id";
+
+            string uiflowQueryResult = await connection.QuerySingleOrDefaultAsync<string>(uiflowQuery, new { id = id });
 
             if (uiflowQueryResult == null)
                 return null;

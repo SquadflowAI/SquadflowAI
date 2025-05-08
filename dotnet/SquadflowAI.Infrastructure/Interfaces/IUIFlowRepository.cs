@@ -10,7 +10,9 @@ namespace SquadflowAI.Infrastructure.Interfaces
     public interface IUIFlowRepository
     {
         Task CreateUIFlowAsync(UIFlowDto flow);
+        Task UpdateUIFlowAsync(UIFlowDto flow);
         Task<UIFlowDto> GetUIFlowByNameAsync(string name);
+        Task<UIFlowDto> GetUIFlowByIdAsync(Guid id);
         Task<IEnumerable<UIFlowDto>> GetUIFlowsAsync();
         Task<IEnumerable<UIFlowDto>> GetUIFlowsByProjectIdAsync(Guid projectId);
     }
