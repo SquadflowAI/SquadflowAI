@@ -79,5 +79,15 @@ namespace SquadflowAI.API.Controllers
 
             return Ok(uiflows);
         }
+
+        [HttpDelete("id/{id}")]
+        public async Task<IActionResult> DeleteUIFlowById(string id)
+        {
+            var flowId = new Guid(id);
+
+            await _iUIFlowService.DeleteUIFlowByIdAsync(flowId);
+
+            return Ok();
+        }
     }
 }

@@ -85,6 +85,19 @@ namespace SquadflowAI.Infrastructure.Repository
             return result;
         }
 
+        public async Task DeleteUIFlowByIdAsync(Guid id)
+        {
+            using var connection = _dbContext.CreateConnection();
+            connection.Open();
+
+            var uiflowSql = @"
+            DELETE
+            FROM uiflows a
+            WHERE a.id = @id";
+
+            await connection.ExecuteAsync(uiflowSql, new { id = id });
+        }
+
         public async Task<IEnumerable<UIFlowDto>> GetUIFlowsAsync()
         {
             using var connection = _dbContext.CreateConnection();

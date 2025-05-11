@@ -56,5 +56,10 @@ namespace SquadflowAI.Services.Services
 
             return result;
         }
+
+        public async Task DeleteUIFlowByIdAsync(Guid id)
+        {
+            await _uIFlowRepository.DeleteUIFlowByIdAsync(id);
+        }
     }
 }
