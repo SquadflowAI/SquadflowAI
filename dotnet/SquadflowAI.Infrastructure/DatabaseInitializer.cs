@@ -36,11 +36,33 @@ namespace SquadflowAI.Infrastructure
                 AND table_name = 'actionrun'
             );";
 
-            const string checkTableToolsRunQuery = @"
+            const string checkTableAppsSystemRunQuery = @"
             SELECT EXISTS (
                 SELECT FROM information_schema.tables 
                 WHERE table_schema = 'public' 
-                AND table_name = 'tools'
+                AND table_name = 'appssystem'
+            );";
+
+
+            const string checkTableAIToolsSystemRunQuery = @"
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables 
+                WHERE table_schema = 'public' 
+                AND table_name = 'aitoolssystem'
+            );";
+
+            const string checkTableToolsSystemRunQuery = @"
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables 
+                WHERE table_schema = 'public' 
+                AND table_name = 'toolssystem'
+            );";
+
+            const string checkTableCoreToolsSystemRunQuery = @"
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables 
+                WHERE table_schema = 'public' 
+                AND table_name = 'coretoolssystem'
             );";
 
             const string checkTableUIFlowsQuery = @"
@@ -69,6 +91,7 @@ namespace SquadflowAI.Infrastructure
             const string createTableAgents = @"CREATE TABLE agents (
                                     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                                     name VARCHAR(255),
+                                    type VARCHAR(55),
                                     data JSONB);";
 
             const string createTableActionRun = @"CREATE TABLE actionRun (
@@ -79,7 +102,24 @@ namespace SquadflowAI.Infrastructure
                                     data TEXT,
                                     bytedata BYTEA);";
 
-            const string createTableTools = @"CREATE TABLE tools (
+            const string createTableAIToolsSystem = @"CREATE TABLE aitoolssystem (
+                                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                                    name VARCHAR(255),
+                                    type VARCHAR(255),
+                                    key VARCHAR(255));";
+
+            const string createTableToolsSystem = @"CREATE TABLE toolssystem (
+                                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                                    name VARCHAR(255),
+                                    key VARCHAR(255));";
+
+            const string createTableCoreToolsSystem = @"CREATE TABLE coretoolssystem (
+                                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                                    name VARCHAR(255),
+                                    type VARCHAR(55),
+                                    key VARCHAR(255));";
+
+            const string createTableAppsSystem = @"CREATE TABLE appssystem (
                                     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                                     name VARCHAR(255),
                                     key VARCHAR(255));";
@@ -113,8 +153,11 @@ namespace SquadflowAI.Infrastructure
 
             // Check if the table exists
             bool tableExistsAgents = connection.ExecuteScalar<bool>(checkTableAgentsQuery);
-            bool tableExistsActionRun = connection.ExecuteScalar<bool>(checkTableActionRunQuery);
-            bool tableExistsTools = connection.ExecuteScalar<bool>(checkTableToolsRunQuery);
+            bool tableExistsActionRun = connection.ExecuteScalar<bool>(checkTableActionRunQuery); 
+            bool tableExistsAIToolsSystem = connection.ExecuteScalar<bool>(checkTableAIToolsSystemRunQuery);
+            bool tableExistsToolsSystem = connection.ExecuteScalar<bool>(checkTableToolsSystemRunQuery);
+            bool tableExistsCoreToolsSystem = connection.ExecuteScalar<bool>(checkTableCoreToolsSystemRunQuery);
+            bool tableExistsAppsSystem = connection.ExecuteScalar<bool>(checkTableAppsSystemRunQuery);
             bool tableExistsUIFlows = connection.ExecuteScalar<bool>(checkTableUIFlowsQuery);
             bool tableExistsProjects = connection.ExecuteScalar<bool>(checkTableProjectsQuery);
             bool tableExistsUsers = connection.ExecuteScalar<bool>(checkTableUsersQuery);
@@ -123,6 +166,12 @@ namespace SquadflowAI.Infrastructure
             {
                 connection.Execute(createTableAgents);
                 Console.WriteLine("Table 'Agents' has been created.");
+                connection.Execute(@"INSERT INTO agents (name, data, type) VALUES 
+                   ('LLM Promt', '', 'system'),
+                   ('Web Research', '', 'system'),
+                   ('Data search', '', 'system'),
+                   ('Summarize Text', '', 'system'),
+                   ('Categorizer Text', '', 'system');");
             }
 
             if (!tableExistsActionRun)
@@ -131,17 +180,52 @@ namespace SquadflowAI.Infrastructure
                 Console.WriteLine("Table 'ActionRun' has been created.");
             }
 
-            if (!tableExistsTools)
+            if (!tableExistsAppsSystem)
             {
-                connection.Execute(createTableTools);
-                connection.Execute(@"INSERT INTO tools (name, key) VALUES 
-                   ('Data Analyzer', 'data-analyzer'), 
-                   ('Gmail Client', 'gmail-client'), 
-                   ('Pdf Generator', 'pdf-generator'),
-                   ('Serper API', 'serper-api'), 
-                   ('Web Scraper','web-scraper');");
-                Console.WriteLine("Table 'Tools' has been created.");
+                connection.Execute(createTableAppsSystem);
+                connection.Execute(@"INSERT INTO appssystem (name, key) VALUES 
+                   ('Gmail', 'gmail-app');");
+                Console.WriteLine("Table 'appssystem' has been created.");
             }
+
+            if (!tableExistsToolsSystem)
+            {
+                connection.Execute(createTableToolsSystem);
+                connection.Execute(@"INSERT INTO toolssystem (name, key) VALUES 
+                   ('Serper API', 'serper-api');");
+                Console.WriteLine("Table 'toolssystem' has been created.");
+            }
+
+            if (!tableExistsAIToolsSystem)
+            {
+                connection.Execute(createTableAIToolsSystem);
+                connection.Execute(@"INSERT INTO aitoolssystem (name, key, type) VALUES 
+                   ('LLM Promt', 'llm-promt', 'core'),
+                   ('Web Research', 'web-research', 'agent'),
+                   ('Data search', 'data-search', 'agent'),
+                   ('Summarize Text', 'text-summarizer', 'agent'),
+                   ('Categorizer Text', 'text-summarizer', 'agent');");
+                Console.WriteLine("Table 'aitoolssystem' has been created.");
+            }
+
+            if (!tableExistsCoreToolsSystem)
+            {
+                connection.Execute(createTableCoreToolsSystem);
+                connection.Execute(@"INSERT INTO coretoolssystem (name, key, type) VALUES 
+                   ('HTTP Request', 'http-request', 'core'),
+                   ('Run code', 'run-code', 'core'),
+                   ('HTML to PDF', 'html-to-pdf', 'core'),
+                   ('Human Action', 'human-action', 'core'),
+                   ('Text Input', 'text-input', 'input'),
+                   ('Text Output', 'text-output', 'output'),
+                   ('Pdf Output', 'pdf-output', 'output'),
+                   ('Word Output', 'word-output', 'output'),
+                   ('Json Output', 'json-output', 'output');");
+                Console.WriteLine("Table 'coretoolssystem' has been created.");
+            }
+
+            //('Data Analyzer', 'data-analyzer'), 
+            //('Pdf Generator', 'pdf-generator'),
 
             if (!tableExistsUsers)
             {
@@ -161,7 +245,8 @@ namespace SquadflowAI.Infrastructure
                 Console.WriteLine("Table 'UIFlows' has been created.");
             }
 
-            if (tableExistsAgents && tableExistsActionRun && tableExistsTools &&
+            if (tableExistsAgents && tableExistsActionRun && tableExistsCoreToolsSystem &&
+                tableExistsAIToolsSystem && tableExistsToolsSystem && tableExistsAppsSystem &&
                 tableExistsUIFlows && tableExistsProjects && tableExistsUsers)
             {
                 Console.WriteLine("No new tables to create.");
