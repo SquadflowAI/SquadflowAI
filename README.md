@@ -4,6 +4,8 @@
 
 AI Agents builder and orchestrator that allows you transform your agens & flows in a professional webiste through vibe coding. Beatiful studio with drag and drop. The platform is agnostic to any LLM. Connect you favourite tools.
 
+<img width="800" alt="squadflow" src="https://github.com/user-attachments/assets/2b512677-0c0e-4966-a332-f1e8b1c919e5" />
+
 <h2>Key Features</h2>
 <h5>Agents</h5>
 The principal block of the platform, has context, memory and can use any tool.
