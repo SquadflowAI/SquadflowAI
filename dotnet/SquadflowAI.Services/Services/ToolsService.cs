@@ -23,5 +23,26 @@ namespace SquadflowAI.Services.Services
 
             return result;
         }
+
+        public async Task<IEnumerable<CoreToolDto>> GetCoreToolsAsync()
+        {
+            var result = await _toolsRepository.GetCoreToolsAsync();
+
+            return result;
+        }
+
+        public async Task<IEnumerable<AIToolDto>> GetAIToolsAsync()
+        {
+            var result = await _toolsRepository.GetAIToolsAsync();
+
+            return result;
+        }
+
+        public async Task<IEnumerable<AppDto>> GetAppsAsync()
+        {
+            var result = await _toolsRepository.GetAppsAsync();
+
+            return result;
+        }
     }
 }

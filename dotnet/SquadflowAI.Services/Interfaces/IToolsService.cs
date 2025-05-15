@@ -10,5 +10,8 @@ namespace SquadflowAI.Services.Interfaces
     public interface IToolsService
     {
         Task<IEnumerable<ToolDto>> GetToolsAsync();
+        Task<IEnumerable<CoreToolDto>> GetCoreToolsAsync();
+        Task<IEnumerable<AIToolDto>> GetAIToolsAsync();
+        Task<IEnumerable<AppDto>> GetAppsAsync();
     }
 }

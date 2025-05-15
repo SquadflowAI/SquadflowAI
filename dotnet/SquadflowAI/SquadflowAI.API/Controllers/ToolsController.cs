@@ -16,9 +16,43 @@ namespace SquadflowAI.API.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<IActionResult> GetUIFlows()
+        public async Task<IActionResult> GetUITools()
         {
             var tools = await _toolsService.GetToolsAsync();
+            if (tools == null)
+            {
+                return NotFound();
+            }
+            return Ok(tools);
+        }
+
+        [HttpGet("all/core")]
+        public async Task<IActionResult> GetUICoreTools()
+        {
+            var tools = await _toolsService.GetCoreToolsAsync();
+            if (tools == null)
+            {
+                return NotFound();
+            }
+            return Ok(tools);
+        }
+
+        [HttpGet("all/ai")]
+        public async Task<IActionResult> GetUIAITools()
+        {
+            var tools = await _toolsService.GetAIToolsAsync();
+            if (tools == null)
+            {
+                return NotFound();
+            }
+            return Ok(tools);
+        }
+
+
+        [HttpGet("all/apps")]
+        public async Task<IActionResult> GetUIApps()
+        {
+            var tools = await _toolsService.GetAppsAsync();
             if (tools == null)
             {
                 return NotFound();
