@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SquadflowAI.Services.Interfaces
 {
-    public interface IOpenAILLMExecutorService
+    public interface IOpenAILLMExecutorServiceOLD
     {
         Task ExecuteAsync(Domain.Agent agent, int maxIterations = 10);
     }

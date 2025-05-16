@@ -65,7 +65,7 @@ builder.Services.AddSingleton<DbContext>();
 builder.Services.AddTransient<DatabaseInitializer>();
 builder.Services.AddTransient<IUIFlowService, UIFlowService>();
 builder.Services.AddTransient<IAgentService, AgentService>();
-builder.Services.AddTransient<IOpenAILLMExecutorService, OpenAILLMExecutorService>();
+builder.Services.AddTransient<IOpenAILLMExecutorServiceOLD, OpenAILLMExecutorServiceOLD>();
 builder.Services.AddTransient<IToolsService, ToolsService>();
 builder.Services.AddTransient<IProjectsService, ProjectsService>();
 builder.Services.AddTransient<IUserService, UserService>();

@@ -11,17 +11,17 @@ using SquadflowAI.Tools.Interfaces;
 
 namespace SquadflowAI.Services.LLMExecutors
 {
-    public class OpenAILLMExecutorService : IOpenAILLMExecutorService
+    public class OpenAILLMExecutorServiceOLD : IOpenAILLMExecutorServiceOLD
     {
-        private readonly ExecutionContext _context;
+        private readonly ExecutionContextOLD _context;
         private IOpenAIAPIClient _openAIAPIClient;
         private IActionRunRepository _actionRunRepository;
         private readonly Dictionary<string, ITool> _tools;
-        public OpenAILLMExecutorService(IOpenAIAPIClient openAIAPIClient, IEnumerable<ITool> tools,
+        public OpenAILLMExecutorServiceOLD(IOpenAIAPIClient openAIAPIClient, IEnumerable<ITool> tools,
             IActionRunRepository actionRunRepository) 
         {
             _openAIAPIClient = openAIAPIClient;
-            _context = new ExecutionContext();
+            _context = new ExecutionContextOLD();
             _tools = tools.ToDictionary(strategy => strategy.Key);
             _actionRunRepository = actionRunRepository;
         }

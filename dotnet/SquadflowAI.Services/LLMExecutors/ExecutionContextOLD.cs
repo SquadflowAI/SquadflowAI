@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SquadflowAI.Services.LLMExecutors
 {
-    public class ExecutionContext
+    public class ExecutionContextOLD
     {
         public string Mission { get; set; } // Agent's mission
         public bool IsComplete { get; set; } // Workflow completion flag

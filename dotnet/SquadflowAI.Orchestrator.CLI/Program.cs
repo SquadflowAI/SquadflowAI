@@ -67,7 +67,7 @@ var builder = Host.CreateDefaultBuilder(args)
         services.AddSingleton<DbContext>();
         services.AddTransient<DatabaseInitializer>();
         services.AddTransient<IAgentService, AgentService>();
-        services.AddTransient<IOpenAILLMExecutorService, OpenAILLMExecutorService>();
+        services.AddTransient<IOpenAILLMExecutorServiceOLD, OpenAILLMExecutorServiceOLD>();
         // Repositories
         services.AddScoped<IAgentRepository, AgentRepository>();
         services.AddScoped<IActionRunRepository, ActionRunRepository>();
@@ -94,7 +94,7 @@ var agentService = app.Services.GetRequiredService<IAgentService>();
 var result = await agentService.GetAgentByNameAsync("Football Stats Agent");
 Console.WriteLine(JsonConvert.SerializeObject(result));
 
-var exec = app.Services.GetRequiredService<IOpenAILLMExecutorService>();
+var exec = app.Services.GetRequiredService<IOpenAILLMExecutorServiceOLD>();
 
 await exec.ExecuteAsync(result);
 //--TEST AREA END
