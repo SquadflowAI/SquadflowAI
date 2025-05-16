@@ -1,4 +1,5 @@
-<h1>SquadflowAI</h1>
+
+<img width="100" alt="222222" src="https://github.com/user-attachments/assets/d267c00d-f452-4c01-9838-70c4947a6ef0" /><h1>SquadflowAI</h1>
 
 <h3>AI Agents orchestrator && Vibe coding</h3> 
 
