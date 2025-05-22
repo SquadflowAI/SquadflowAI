@@ -18,6 +18,7 @@ namespace SquadflowAI.Services.Interfaces
 
         Task<IEnumerable<UIFlowDto>> GetUIFlowsByProjectIdAsync(Guid projectId);
 
+        Task<string> RunUIFlowByIdAsync(Guid id);
         Task DeleteUIFlowByIdAsync(Guid id);
     }
 }

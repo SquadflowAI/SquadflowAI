@@ -25,6 +25,12 @@ namespace SquadflowAI.Infrastructure.Repository
             using var connection = _dbContext.CreateConnection();
             connection.Open();
 
+            if(flow.Nodes != null && flow.Connections != null )
+            {
+                AssignOrderSequences(flow);
+            }
+            
+
             var data = JsonConvert.SerializeObject(flow);
             var uiflowQuery = "INSERT INTO uiflows (name, projectId, data) VALUES (@name, @projectId, @data::jsonb)";
 
@@ -35,6 +41,11 @@ namespace SquadflowAI.Infrastructure.Repository
         {
             using var connection = _dbContext.CreateConnection();
             connection.Open();
+
+            if (flow.Nodes != null && flow.Connections != null)
+            {
+                AssignOrderSequences(flow);
+            }
 
             var data = JsonConvert.SerializeObject(flow);
             var uiflowQuery = @"UPDATE uiflows
@@ -131,5 +142,118 @@ namespace SquadflowAI.Infrastructure.Repository
 
             return projectsQueryResult.ToList();
         }
+
+        public void AssignOrderSequences(UIFlowDto uIFlow)
+        {
+            var nodeDict = uIFlow.Nodes.ToDictionary(n => n.Id);
+            var inDegree = new Dictionary<string, int>();
+            var adjacencyList = new Dictionary<string, List<string>>();
+
+            // Initialize in-degree and adjacency list
+            foreach (var node in uIFlow.Nodes)
+            {
+                inDegree[node.Id] = 0;
+                adjacencyList[node.Id] = new List<string>();
+                node.NextNodeIds = new List<int>(); // Ensure it's initialized
+            }
+
+            foreach (var conn in uIFlow.Connections)
+            {
+                adjacencyList[conn.SourceNodeId].Add(conn.TargetNodeId);
+                inDegree[conn.TargetNodeId]++;
+            }
+
+            // Topological sort using BFS (Kahn's algorithm)
+            var queue = new Queue<string>();
+            int sequence = 1;
+
+            // Start from nodes with 0 in-degree
+            foreach (var nodeId in inDegree.Where(x => x.Value == 0).Select(x => x.Key))
+            {
+                queue.Enqueue(nodeId);
+            }
+
+            // Track order sequence per node ID
+            var orderById = new Dictionary<string, int>();
+
+            while (queue.Count > 0)
+            {
+                var currentId = queue.Dequeue();
+                var currentNode = nodeDict[currentId];
+                currentNode.OrderSequence = sequence;
+                orderById[currentId] = sequence;
+                sequence++;
+
+                foreach (var neighborId in adjacencyList[currentId])
+                {
+                    inDegree[neighborId]--;
+                    if (inDegree[neighborId] == 0)
+                    {
+                        queue.Enqueue(neighborId);
+                    }
+                }
+            }
+
+            // After all OrderSequences are assigned, populate NextNodeIds using OrderSequence
+            foreach (var conn in uIFlow.Connections)
+            {
+                if (orderById.TryGetValue(conn.SourceNodeId, out var sourceOrder) &&
+                    orderById.TryGetValue(conn.TargetNodeId, out var targetOrder) &&
+                    nodeDict.TryGetValue(conn.SourceNodeId, out var sourceNode))
+                {
+                    if (!sourceNode.NextNodeIds.Contains(targetOrder))
+                    {
+                        sourceNode.NextNodeIds.Add(targetOrder);
+                    }
+                }
+            }
+        }
+
+
+        //public void AssignOrderSequences(UIFlowDto uIFlow)
+        //{
+        //    var nodeDict = uIFlow.Nodes.ToDictionary(n => n.Id);
+        //    var inDegree = new Dictionary<string, int>();
+        //    var adjacencyList = new Dictionary<string, List<string>>();
+
+        //    // Initialize in-degree and adjacency list
+        //    foreach (var node in uIFlow.Nodes)
+        //    {
+        //        inDegree[node.Id] = 0;
+        //        adjacencyList[node.Id] = new List<string>();
+        //    }
+
+        //    foreach (var conn in uIFlow.Connections)
+        //    {
+        //        adjacencyList[conn.SourceNodeId].Add(conn.TargetNodeId);
+        //        inDegree[conn.TargetNodeId]++;
+        //    }
+
+        //    // Topological sort using BFS (Kahn's algorithm)
+        //    var queue = new Queue<string>();
+        //    int sequence = 1;
+
+        //    // Start from nodes with 0 in-degree
+        //    foreach (var nodeId in inDegree.Where(x => x.Value == 0).Select(x => x.Key))
+        //    {
+        //        queue.Enqueue(nodeId);
+        //    }
+
+        //    while (queue.Count > 0)
+        //    {
+        //        var currentId = queue.Dequeue();
+        //        var currentNode = nodeDict[currentId];
+        //        currentNode.OrderSequence = sequence++;
+
+        //        foreach (var neighbor in adjacencyList[currentId])
+        //        {
+        //            inDegree[neighbor]--;
+        //            if (inDegree[neighbor] == 0)
+        //            {
+        //                queue.Enqueue(neighbor);
+        //            }
+        //        }
+        //    }
+        //}
     }
 }

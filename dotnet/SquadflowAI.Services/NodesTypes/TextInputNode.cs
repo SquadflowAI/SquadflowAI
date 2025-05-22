@@ -1,4 +1,5 @@
-﻿using SquadflowAI.Services.NodesTypes.Base;
+﻿using SquadflowAI.Contracts.Dtos;
+using SquadflowAI.Services.NodesTypes.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace SquadflowAI.Services.NodesTypes
             _staticText = staticText;
         }
 
-        public Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters)
+        public Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow)
         {
             return Task.FromResult(_staticText);
         }

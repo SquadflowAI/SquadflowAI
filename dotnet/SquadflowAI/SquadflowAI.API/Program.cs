@@ -69,6 +69,8 @@ builder.Services.AddTransient<IOpenAILLMExecutorServiceOLD, OpenAILLMExecutorSer
 builder.Services.AddTransient<IToolsService, ToolsService>();
 builder.Services.AddTransient<IProjectsService, ProjectsService>();
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IFlowExecutorService, FlowExecutorService>();
+
 
 // Repositories
 builder.Services.AddScoped<IUIFlowRepository, UIFlowRepository>();

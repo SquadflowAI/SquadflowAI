@@ -1,4 +1,5 @@
 ﻿using SquadflowAI.Contracts.Dtos;
+using SquadflowAI.Services.Interfaces;
 using SquadflowAI.Services.NodesTypes;
 using System;
 using System.Collections.Generic;
@@ -8,17 +9,17 @@ using System.Threading.Tasks;
 
 namespace SquadflowAI.Services.LLMExecutors
 {
-    public class FlowExecutorService
+    public class FlowExecutorService : IFlowExecutorService
     {
-        private readonly Dictionary<int, UIAgentNodeDto> _flowMap;
-
-        public FlowExecutorService(UIFlowDto uIFlow) 
+        public FlowExecutorService() 
         {
-            _flowMap = uIFlow.Nodes.ToDictionary(n => n.OrderSequence);
+            
         }
 
-        public async Task<string> ExecuteAsync()
+        public async Task<string> ExecuteAsync(UIFlowDto uIFlow)
         {
+            Dictionary<int, UIAgentNodeDto>  _flowMap = uIFlow.Nodes.ToDictionary(n => n.OrderSequence);
+
             var currentNodeSequence = _flowMap.First().Key;
             string input = "";
 
@@ -26,7 +27,7 @@ namespace SquadflowAI.Services.LLMExecutors
             {
                 var nodeData = _flowMap[currentNodeSequence];
                 var node = NodeFactory.CreateNode(nodeData);
-                input = await node.ExecuteAsync(input, nodeData.Parameters);
+                input = await node.ExecuteAsync(input, nodeData.Parameters, uIFlow);
 
                 currentNodeSequence = nodeData.NextNodeIds.FirstOrDefault();
             }

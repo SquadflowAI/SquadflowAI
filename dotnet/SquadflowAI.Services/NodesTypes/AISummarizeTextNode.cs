@@ -1,4 +1,5 @@
-﻿using SquadflowAI.Services.NodesTypes.Base;
+﻿using SquadflowAI.Contracts.Dtos;
+using SquadflowAI.Services.NodesTypes.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace SquadflowAI.Services.NodesTypes
 
         public AISummarizeTextNode(string id) { Id = id; }
 
-        public Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters)
+        public Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow)
         {
             var instruction = parameters["instruction"];
 

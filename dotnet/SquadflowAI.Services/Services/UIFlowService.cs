@@ -14,9 +14,11 @@ namespace SquadflowAI.Services.Services
     public class UIFlowService : IUIFlowService
     {
         private readonly IUIFlowRepository _uIFlowRepository;
-        public UIFlowService(IUIFlowRepository uIFlowRepository)
+        private readonly IFlowExecutorService _flowExecutorService;
+        public UIFlowService(IUIFlowRepository uIFlowRepository, IFlowExecutorService flowExecutorService)
         {
             _uIFlowRepository = uIFlowRepository;
+            _flowExecutorService = flowExecutorService;
         }
 
         public async Task CreateUIFlowAsync(UIFlowDto uiflow)
@@ -53,6 +55,15 @@ namespace SquadflowAI.Services.Services
         public async Task<IEnumerable<UIFlowDto>> GetUIFlowsByProjectIdAsync(Guid projectId)
         {
             var result = await _uIFlowRepository.GetUIFlowsByProjectIdAsync(projectId);
+
+            return result;
+        }
+
+        public async Task<string> RunUIFlowByIdAsync(Guid id)
+        {
+            var flow = await _uIFlowRepository.GetUIFlowByIdAsync(id);
+
+            var result = await _flowExecutorService.ExecuteAsync(flow);
 
             return result;
         }
