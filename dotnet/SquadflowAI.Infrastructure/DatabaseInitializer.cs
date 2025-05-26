@@ -86,6 +86,13 @@ namespace SquadflowAI.Infrastructure
                 AND table_name = 'users'
             );";
 
+            const string checkTableIntegrationsQuery = @"
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables 
+                WHERE table_schema = 'public' 
+                AND table_name = 'integrations'
+            );";
+
             //CREATE
 
             const string createTableAgents = @"CREATE TABLE agents (
@@ -146,6 +153,13 @@ namespace SquadflowAI.Infrastructure
                                     data JSONB);";
 
 
+            const string createTableIntegrations = @"CREATE TABLE integrations (
+                                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                                    userId UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                                    openAIKey VARCHAR(255),
+                                    createdDate TIMESTAMP,
+                                    updatedDate TIMESTAMP);";
+
 
 
 
@@ -161,6 +175,7 @@ namespace SquadflowAI.Infrastructure
             bool tableExistsUIFlows = connection.ExecuteScalar<bool>(checkTableUIFlowsQuery);
             bool tableExistsProjects = connection.ExecuteScalar<bool>(checkTableProjectsQuery);
             bool tableExistsUsers = connection.ExecuteScalar<bool>(checkTableUsersQuery);
+            bool tableExistsIntegrations = connection.ExecuteScalar<bool>(checkTableIntegrationsQuery);
 
             if (!tableExistsAgents)
             {
@@ -245,9 +260,16 @@ namespace SquadflowAI.Infrastructure
                 Console.WriteLine("Table 'UIFlows' has been created.");
             }
 
+
+            if (!tableExistsIntegrations)
+            {
+                connection.Execute(createTableIntegrations);
+                Console.WriteLine("Table 'UIFlows' has been created.");
+            }
+
             if (tableExistsAgents && tableExistsActionRun && tableExistsCoreToolsSystem &&
                 tableExistsAIToolsSystem && tableExistsToolsSystem && tableExistsAppsSystem &&
-                tableExistsUIFlows && tableExistsProjects && tableExistsUsers)
+                tableExistsUIFlows && tableExistsProjects && tableExistsUsers && tableExistsIntegrations)
             {
                 Console.WriteLine("No new tables to create.");
             }

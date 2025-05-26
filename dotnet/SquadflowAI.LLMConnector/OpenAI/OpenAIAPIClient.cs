@@ -21,8 +21,10 @@ namespace SquadflowAI.LLMConnector.OpenAI
             _httpClient = httpClient;
         }
 
-        public async Task<ResponseLLMDto> SendMessageAsync(RequestLLMDto request)
+        public async Task<ResponseLLMDto> SendMessageAsync(RequestLLMDto request, string openAIApiKey)
         {
+            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {openAIApiKey}");
+
             var requestBody = new
             {
                 model = "gpt-4o-mini",
@@ -43,9 +45,15 @@ namespace SquadflowAI.LLMConnector.OpenAI
             //var parsedResponse = response?.choices?[0]?.message?.content;
             //var contentObject = JsonConvert.DeserializeObject<string>(parsedResponse);
 
-            var mappedResult = JsonConvert.DeserializeObject<ResponseLLMDto>(response);
+            if (response == null)
+                return null;
 
-            return mappedResult;
+            var responseLLM = new ResponseLLMDto();
+            responseLLM.Output = response;
+
+            //var mappedResult = JsonConvert.DeserializeObject<ResponseLLMDto>(response);
+
+            return responseLLM;
         }
 
         private async Task<dynamic> GetValidatedResponseAsync(StringContent content, RequestLLMDto configsForLLM)
@@ -61,16 +69,16 @@ namespace SquadflowAI.LLMConnector.OpenAI
 
                 if (IsResponseValid(llmResponse, out response)) break;
 
-                configsForLLM.UserPrompt = $@"
-                        The previous response did not match the required format. Please strictly adhere to the following format:
-                        {{
-                          ""input"": ""..."" or ""output"": ""..."",
-                          ""completed"": false
-                        }}
+                //configsForLLM.UserPrompt = $@"
+                //        The previous response did not match the required format. Please strictly adhere to the following format:
+                //        {{
+                //          ""input"": ""..."" or ""output"": ""..."",
+                //          ""completed"": false
+                //        }}
 
-                        Retry with a valid response.";
+                //        Retry with a valid response.";
 
-            } while (true && iteration < 3);
+            } while (true && iteration < 1);
 
             return response;
         }
@@ -91,10 +99,10 @@ namespace SquadflowAI.LLMConnector.OpenAI
                 }
 
                 string cleanedResponse = Regex.Replace(parsedResponse, @"```json|```", "").Trim();
-                var contentObject = JsonConvert.DeserializeObject<ResponseLLMDto>(cleanedResponse);
+                //var contentObject = JsonConvert.DeserializeObject<ResponseLLMDto>(cleanedResponse);
 
                 // Check if 'completed' exists and at least one of 'input' or 'output' exists
-                return contentObject != null;
+                return cleanedResponse != null;
             }
             catch
             {

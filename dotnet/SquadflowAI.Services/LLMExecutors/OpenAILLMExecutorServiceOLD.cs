@@ -86,10 +86,10 @@ namespace SquadflowAI.Services.LLMExecutors
                         if (agent.Actions[ai].Tools[ti].Name == "pdf-generator")
                         {
                             configsForLLM.MaxTokens = 2000;
-                            llmResponse = await _openAIAPIClient.SendMessageAsync(configsForLLM);
+                            //llmResponse = await _openAIAPIClient.SendMessageAsync(configsForLLM);
                         } else
                         {
-                            llmResponse = await _openAIAPIClient.SendMessageAsync(configsForLLM);
+                            //llmResponse = await _openAIAPIClient.SendMessageAsync(configsForLLM);
                         }
 
                         var toolCompleted = false;

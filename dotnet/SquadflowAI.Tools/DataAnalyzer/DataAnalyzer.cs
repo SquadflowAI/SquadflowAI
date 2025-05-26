@@ -60,12 +60,12 @@ namespace SquadflowAI.Tools.DataAnalyzer
 
                 Ensure that the completed field indicates whether the action is done. If one more iteration is needed then set to false.";
 
-                // Send the prompts to the LLM and await the response
-                var llmResponse = await _openAIAPIClient.SendMessageAsync(configsForLLM);
+            // Send the prompts to the LLM and await the response
+                var llmResponse = "";//await _openAIAPIClient.SendMessageAsync(configsForLLM);
 
                 var response = new ToolResponseDto()
                 {
-                    Data = llmResponse.Output,
+                    //Data = llmResponse.Output,
                     DataType = Contracts.Enums.ToolDataTypeEnum.String
                 };
 

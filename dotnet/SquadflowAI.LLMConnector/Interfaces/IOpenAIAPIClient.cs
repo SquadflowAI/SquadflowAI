@@ -9,6 +9,6 @@ namespace SquadflowAI.LLMConnector.Interfaces
 {
     public interface IOpenAIAPIClient
     {
-        Task<ResponseLLMDto> SendMessageAsync(RequestLLMDto request);
+        Task<ResponseLLMDto> SendMessageAsync(RequestLLMDto request, string openAIApiKey);
     }
 }

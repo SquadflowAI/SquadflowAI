@@ -7,6 +7,7 @@ using SquadflowAI.LLMConnector.OpenAI;
 using SquadflowAI.Services.Agent;
 using SquadflowAI.Services.Interfaces;
 using SquadflowAI.Services.LLMExecutors;
+using SquadflowAI.Services.NodesTypes;
 using SquadflowAI.Services.Services;
 using SquadflowAI.Tools.DataAnalyzer;
 using SquadflowAI.Tools.GmailClient;
@@ -38,7 +39,7 @@ var gmailAppPassword = configuration.GetValue<string>("GMAIL_APPPASWORD");
 builder.Services.AddHttpClient<IOpenAIAPIClient, OpenAIAPIClient>(client =>
 {
     client.BaseAddress = new Uri("https://api.openai.com/");
-    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {openAIApiKey}");
+    // client.DefaultRequestHeaders.Add("Authorization", $"Bearer {openAIApiKey}");
 });
 
 builder.Services.AddHttpClient<ITool, SerperAPIClient>(client =>
@@ -70,6 +71,14 @@ builder.Services.AddTransient<IToolsService, ToolsService>();
 builder.Services.AddTransient<IProjectsService, ProjectsService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IFlowExecutorService, FlowExecutorService>();
+builder.Services.AddTransient<IIntegrationsService, IntegrationsService>();
+
+
+builder.Services.AddTransient<TextInputNode>();
+builder.Services.AddTransient<LLMPromptNode>();
+builder.Services.AddTransient<AISummarizeTextNode>();
+builder.Services.AddTransient<TextOutputNode>();
+builder.Services.AddSingleton<NodeFactory>();
 
 
 // Repositories
@@ -79,6 +88,7 @@ builder.Services.AddScoped<IActionRunRepository, ActionRunRepository>();
 builder.Services.AddScoped<IToolsRepository, ToolsRepository>();
 builder.Services.AddScoped<IProjectsRepository, ProjectsRepository>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+builder.Services.AddScoped<IIntegrationsRepository, IntegrationsRepository>();
 
 //builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>

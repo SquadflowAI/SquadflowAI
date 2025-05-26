@@ -1,4 +1,5 @@
 ﻿using SquadflowAI.Contracts.Dtos;
+using SquadflowAI.LLMConnector.Interfaces;
 using SquadflowAI.Services.NodesTypes.Base;
 using System;
 using System.Collections.Generic;
@@ -10,20 +11,18 @@ namespace SquadflowAI.Services.NodesTypes
 {
     public class TextInputNode : INode
     {
-         
+
         public string Id { get; private set; }
 
-        private readonly string _staticText;
-
-        public TextInputNode(string id, string staticText)
+        public void Initialize(string id, IDictionary<string, string> parameters)
         {
             Id = id;
-            _staticText = staticText;
         }
 
         public Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow)
         {
-            return Task.FromResult(_staticText);
+            var param = parameters["text"];
+            return Task.FromResult(param);
         }
     }
 }

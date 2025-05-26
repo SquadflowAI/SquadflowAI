@@ -11,9 +11,10 @@ namespace SquadflowAI.Services.LLMExecutors
 {
     public class FlowExecutorService : IFlowExecutorService
     {
-        public FlowExecutorService() 
+        private readonly NodeFactory _nodeFactory;
+        public FlowExecutorService(NodeFactory nodeFactory) 
         {
-            
+            _nodeFactory = nodeFactory; 
         }
 
         public async Task<string> ExecuteAsync(UIFlowDto uIFlow)
@@ -26,7 +27,7 @@ namespace SquadflowAI.Services.LLMExecutors
             while (currentNodeSequence != 0)
             {
                 var nodeData = _flowMap[currentNodeSequence];
-                var node = NodeFactory.CreateNode(nodeData);
+                var node = _nodeFactory.CreateNode(nodeData);
                 input = await node.ExecuteAsync(input, nodeData.Parameters, uIFlow);
 
                 currentNodeSequence = nodeData.NextNodeIds.FirstOrDefault();

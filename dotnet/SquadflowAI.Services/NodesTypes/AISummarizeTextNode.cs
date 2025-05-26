@@ -12,7 +12,10 @@ namespace SquadflowAI.Services.NodesTypes
     {
         public string Id { get; private set; }
 
-        public AISummarizeTextNode(string id) { Id = id; }
+        public void Initialize(string id, IDictionary<string, string> parameters)
+        {
+            Id = id;
+        }
 
         public Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow)
         {
