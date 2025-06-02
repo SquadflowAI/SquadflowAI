@@ -25,8 +25,8 @@ namespace SquadflowAI.Infrastructure.Repository
 
             var now = DateTime.UtcNow;
 
-            var integrationQuery = "INSERT INTO integrations (userId, openAIKey, createdDate, updatedDate) VALUES (@userId, @openAIKey, @createdDate, @updatedDate)";
-            await connection.ExecuteAsync(integrationQuery, new { integration.UserId, integration.OpenAIKey, DateTime.UtcNow, now });
+            var integrationQuery = "INSERT INTO integrations (userId, openAIKey) VALUES (@userId, @openAIKey)";
+            await connection.ExecuteAsync(integrationQuery, new { integration.UserId, integration.OpenAIKey });
         }
 
         public async Task<IntegrationsDto> GetIntegrationByUserIdAsync(Guid userId)

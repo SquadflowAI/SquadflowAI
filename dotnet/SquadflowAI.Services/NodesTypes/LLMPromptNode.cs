@@ -37,19 +37,25 @@ namespace SquadflowAI.Services.NodesTypes
             var prompt = parameters["prompt"] + " " + input;
 
             //LLM API here
-            var integration = await _integrationsService.GetIntegrationByUserIdAsync((Guid)uIFlow.UserId);
+            if (false) // for offline testing
+            {
+                var integration = await _integrationsService.GetIntegrationByUserIdAsync((Guid)uIFlow.UserId);
+                var configsForLLM = new RequestLLMDto();
 
-            var configsForLLM = new RequestLLMDto();
+                var systemPrompt = GenerateSystemPrompt();
+                configsForLLM.SystemPrompt = systemPrompt;
 
-            var systemPrompt = GenerateSystemPrompt();
-            configsForLLM.SystemPrompt = systemPrompt;
+                configsForLLM.MaxTokens = 2000;
 
-            configsForLLM.MaxTokens = 2000;
+                configsForLLM.UserPrompt = prompt;
 
-            configsForLLM.UserPrompt = prompt;
-            var llmResponse = await _openAIAPIClient.SendMessageAsync(configsForLLM, integration.OpenAIKey);          
+                var llmResponse = await _openAIAPIClient.SendMessageAsync(configsForLLM, integration.OpenAIKey);
 
-            return llmResponse?.Output;
+                return llmResponse?.Output;
+            } else
+            {
+                return "LLM proccesed something";
+            }
         }
 
         private string GenerateSystemPrompt()

@@ -1,4 +1,5 @@
 ﻿using SquadflowAI.Contracts.Dtos;
+using SquadflowAI.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +14,15 @@ namespace SquadflowAI.Services.Interfaces
         Task UpdateUIFlowAsync(UIFlowDto uiflow);
         Task<UIFlowDto> GetUIFlowByNameAsync(string name);
         Task<UIFlowDto> GetUIFlowByIdAsync(Guid id);
-
         Task<IEnumerable<UIFlowDto>> GetUIFlowsAsync();
-
         Task<IEnumerable<UIFlowDto>> GetUIFlowsByProjectIdAsync(Guid projectId);
-
         Task<string> RunUIFlowByIdAsync(Guid id);
         Task DeleteUIFlowByIdAsync(Guid id);
+
+        #region ActionRun
+        Task<IEnumerable<ActionRun>> GetActionRunsByAgentIdAsync(Guid agentId);
+        Task<IEnumerable<ActionRun>> GetActionRunsByFlowIdAsync(Guid flowId);
+        
+        #endregion
     }
 }

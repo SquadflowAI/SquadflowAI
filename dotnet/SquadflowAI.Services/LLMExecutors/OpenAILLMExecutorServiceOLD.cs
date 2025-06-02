@@ -61,7 +61,7 @@ namespace SquadflowAI.Services.LLMExecutors
                             var prevAction = agent.Actions[ai - 1];
                             if(prevAction.Tools.Count > 0 && prevAction.Tools.Last().Name == "pdf-generator")
                             {
-                                toolResultByteData = await _actionRunRepository.GetActionRunByteDataByNameAndAgentNameAsync(agent.Name, prevAction.Name);
+                                toolResultByteData = await _actionRunRepository.GetActionRunByteDataByNameAndAgentNameAsyncOBSOLETE(agent.Name, prevAction.Name);
                                 if(toolResultByteData != null)
                                 {
                                     toolResult = "Result is a PDF in byte array format. Don't prepare any input, leave it empty. Set stricly completed to true";
@@ -69,14 +69,14 @@ namespace SquadflowAI.Services.LLMExecutors
                                 
                             } else
                             {
-                                var data = await _actionRunRepository.GetActionRunDataByNameAndAgentNameAsync(agent.Name, prevAction.Name);
+                                var data = await _actionRunRepository.GetActionRunDataByNameAndAgentNameAsyncOBSOLETE(agent.Name, prevAction.Name);
                                 toolResult = data;
                             }
                         }
 
                         //for test
                         //var data = await _actionRunRepository.GetActionRunByNameAndAgentNameAsync(agent.Name, "Design HTML and Generate PDF Report");
-                        toolResultByteData = await _actionRunRepository.GetActionRunByteDataByNameAndAgentNameAsync(agent.Name, "Design HTML and Generate PDF Report");
+                        toolResultByteData = await _actionRunRepository.GetActionRunByteDataByNameAndAgentNameAsyncOBSOLETE(agent.Name, "Design HTML and Generate PDF Report");
                         toolResult = "Result is a PDF in byte array format. Don't prepare any input, leave it empty. Set stricly completed to true";
 
                         configsForLLM.UserPrompt = PrepareToolInputPrompt(agent.Actions[ai], toolResult, agent.Actions[ai].Tools[ti].Name, nextToolName);
@@ -161,12 +161,12 @@ namespace SquadflowAI.Services.LLMExecutors
                     actionFinalResult = toolResult;
                     if (actionFinalResult != null || !string.IsNullOrEmpty(actionFinalResult)) 
                     {
-                        await _actionRunRepository.SaveActionRunAsync(agent.Name, agent.Actions[ai].Name, actionFinalResult);
+                       // await _actionRunRepository.CreateActionRunAsync(agent.Name, agent.Actions[ai].Name, actionFinalResult);
                     }
 
                     if (byteData != null)
                     {
-                        await _actionRunRepository.SaveActionRunForByteDataAsync(agent.Name, agent.Actions[ai].Name, byteData);
+                       // await _actionRunRepository.CreateActionRunForByteDataAsync(agent.Name, agent.Actions[ai].Name, byteData);
                     }
                     
                     

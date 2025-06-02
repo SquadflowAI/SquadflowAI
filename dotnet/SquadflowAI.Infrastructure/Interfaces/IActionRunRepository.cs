@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SquadflowAI.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +9,14 @@ namespace SquadflowAI.Infrastructure.Interfaces
 {
     public interface IActionRunRepository
     {
-        Task SaveActionRunAsync(string agentName, string actionName, string data);
-        Task SaveActionRunForByteDataAsync(string agentName, string actionName, byte[] bytedata);
-        Task<string> GetActionRunDataByNameAndAgentNameAsync(string agent, string actionName);
-        Task<byte[]> GetActionRunByteDataByNameAndAgentNameAsync(string agent, string actionName);
+        Task CreateActionRunAsync(Guid? agentId, Guid? flowId, string data);
+        Task CreateActionRunForByteDataAsync(Guid? agentId, Guid? flowId, byte[] bytedata);
+        Task<IEnumerable<ActionRun>> GetActionRunsByAgentIdAsync(Guid agentId);
+        Task<IEnumerable<ActionRun>> GetActionRunsByFlowIdAsync(Guid flowId);
+
+
+        Task<string> GetActionRunDataByNameAndAgentNameAsyncOBSOLETE(string agent, string actionName);
+        Task<byte[]> GetActionRunByteDataByNameAndAgentNameAsyncOBSOLETE(string agent, string actionName);
 
 
     }

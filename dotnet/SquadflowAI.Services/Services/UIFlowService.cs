@@ -15,10 +15,15 @@ namespace SquadflowAI.Services.Services
     {
         private readonly IUIFlowRepository _uIFlowRepository;
         private readonly IFlowExecutorService _flowExecutorService;
-        public UIFlowService(IUIFlowRepository uIFlowRepository, IFlowExecutorService flowExecutorService)
+        private IActionRunRepository _actionRunRepository;
+
+        public UIFlowService(IUIFlowRepository uIFlowRepository, 
+            IFlowExecutorService flowExecutorService,
+            IActionRunRepository actionRunRepository)
         {
             _uIFlowRepository = uIFlowRepository;
             _flowExecutorService = flowExecutorService;
+            _actionRunRepository = actionRunRepository;
         }
 
         public async Task CreateUIFlowAsync(UIFlowDto uiflow)
@@ -65,6 +70,11 @@ namespace SquadflowAI.Services.Services
 
             var result = await _flowExecutorService.ExecuteAsync(flow);
 
+            if (result != null)
+            {
+                await _actionRunRepository.CreateActionRunAsync(null, flow.Id, result);
+            }
+
             return result;
         }
 
@@ -72,5 +82,23 @@ namespace SquadflowAI.Services.Services
         {
             await _uIFlowRepository.DeleteUIFlowByIdAsync(id);
         }
+
+        #region ActionRuns
+
+        public async Task<IEnumerable<ActionRun>> GetActionRunsByAgentIdAsync(Guid agentId)
+        {
+            var result = await _actionRunRepository.GetActionRunsByAgentIdAsync(agentId);
+
+            return result;
+        }
+
+        public async Task<IEnumerable<ActionRun>> GetActionRunsByFlowIdAsync(Guid flowId)
+        {
+            var result = await _actionRunRepository.GetActionRunsByFlowIdAsync(flowId);
+
+            return result;
+        }
+
+        #endregion
     }
 }

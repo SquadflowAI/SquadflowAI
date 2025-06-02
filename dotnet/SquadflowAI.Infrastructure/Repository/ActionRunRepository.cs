@@ -18,31 +18,64 @@ namespace SquadflowAI.Infrastructure.Repository
             _dbContext = dbContext;
         }
 
-        public async Task SaveActionRunAsync(string agentName, string actionName, string data)
+        public async Task CreateActionRunAsync(Guid? agentId, Guid? flowId, string data)
         {
             using var connection = _dbContext.CreateConnection();
             connection.Open();
 
             var now = DateTime.Now;
 
-            var actionRunQuery = "INSERT INTO actionRun (agentname, name, date, data) VALUES (@agentName, @actionName, @now, @data)";
+            var actionRunQuery = "INSERT INTO actionRun (agentid, flowid, createddate, data) VALUES (@agentId, @flowId, @now, @data)";
             
-            await connection.ExecuteAsync(actionRunQuery, new { agentName, actionName, now, data });
+            await connection.ExecuteAsync(actionRunQuery, new { agentId, flowId, now, data });
         }
 
-        public async Task SaveActionRunForByteDataAsync(string agentName, string actionName, byte[] bytedata)
+        public async Task CreateActionRunForByteDataAsync(Guid? agentId, Guid? flowId, byte[] bytedata)
         {
             using var connection = _dbContext.CreateConnection();
             connection.Open();
 
             var now = DateTime.Now;
 
-            var actionRunQuery = "INSERT INTO actionRun (agentname, name, date, bytedata) VALUES (@agentName, @actionName, @now, @bytedata)";
+            var actionRunQuery = "INSERT INTO actionRun (agentid, flowid, createddate, bytedata) VALUES (@agentId, @flowId, @now, @bytedata)";
 
-            await connection.ExecuteAsync(actionRunQuery, new { agentName, actionName, now, bytedata });
+            await connection.ExecuteAsync(actionRunQuery, new { agentId, flowId, now, bytedata });
         }
 
-        public async Task<string> GetActionRunDataByNameAndAgentNameAsync(string agent, string actionName)
+        public async Task<IEnumerable<ActionRun>> GetActionRunsByAgentIdAsync(Guid agentId)
+        {
+            using var connection = _dbContext.CreateConnection();
+            connection.Open();
+
+            var actionRunQuery = @"
+            SELECT *
+            FROM actionRun a
+            WHERE a.agentid = @agentId LIMIT 10";
+
+            var agentResult = await connection.QueryAsync<ActionRun>(actionRunQuery, new { agentId = agentId });
+
+            return agentResult;
+
+        }
+
+        public async Task<IEnumerable<ActionRun>> GetActionRunsByFlowIdAsync(Guid flowId)
+        {
+            using var connection = _dbContext.CreateConnection();
+            connection.Open();
+
+            var actionRunQuery = @"
+            SELECT *
+            FROM actionRun a
+            WHERE a.flowid = @flowId LIMIT 10";
+
+            var agentResult = await connection.QueryAsync<ActionRun>(actionRunQuery, new { flowId = flowId });
+
+            return agentResult;
+        }
+
+
+
+        public async Task<string> GetActionRunDataByNameAndAgentNameAsyncOBSOLETE(string agent, string actionName)
         {
             using var connection = _dbContext.CreateConnection();
             connection.Open();
@@ -60,7 +93,7 @@ namespace SquadflowAI.Infrastructure.Repository
             return agentResult;
         }
 
-        public async Task<byte[]> GetActionRunByteDataByNameAndAgentNameAsync(string agent, string actionName)
+        public async Task<byte[]> GetActionRunByteDataByNameAndAgentNameAsyncOBSOLETE(string agent, string actionName)
         {
             using var connection = _dbContext.CreateConnection();
             connection.Open();

@@ -12,8 +12,12 @@ namespace SquadflowAI.Services.Helpers
     {
         public static string EncryptApiKey(string apiKey, IConfiguration configuration)
         {
-             byte[] Key = Encoding.UTF8.GetBytes(configuration.GetValue<string>("SECRET_KEY_32")); // 32 bytes = 256 bits
-             byte[] IV = Encoding.UTF8.GetBytes(configuration.GetValue<string>("SECRET_KEY_16"));
+            var getKey = configuration.GetValue<string>("SECRET_KEY_32");
+            var getIV = configuration.GetValue<string>("SECRET_KEY_16");
+            byte[] key = Convert.FromBase64String(getKey);
+            byte[] iv = Convert.FromBase64String(getIV);
+            byte[] Key = key;
+            byte[] IV = iv;
 
             using (var aes = Aes.Create())
             {
@@ -34,8 +38,12 @@ namespace SquadflowAI.Services.Helpers
 
         public static string DecryptApiKey(string encryptedApiKey, IConfiguration configuration)
         {
-            byte[] Key = Encoding.UTF8.GetBytes(configuration.GetValue<string>("SECRET_KEY_32"));
-            byte[] IV = Encoding.UTF8.GetBytes(configuration.GetValue<string>("SECRET_KEY_16"));
+            var getKey = configuration.GetValue<string>("SECRET_KEY_32");
+            var getIV = configuration.GetValue<string>("SECRET_KEY_16");
+            byte[] key = Convert.FromBase64String(getKey);
+            byte[] iv = Convert.FromBase64String(getIV);
+            byte[] Key = key;
+            byte[] IV = iv;
 
             using (var aes = Aes.Create())
             {

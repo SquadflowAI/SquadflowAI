@@ -32,9 +32,9 @@ namespace SquadflowAI.Infrastructure.Repository
             
 
             var data = JsonConvert.SerializeObject(flow);
-            var uiflowQuery = "INSERT INTO uiflows (name, projectId, data) VALUES (@name, @projectId, @data::jsonb)";
+            var uiflowQuery = "INSERT INTO uiflows (name, userId, projectId, data) VALUES (@name, @userId, @projectId, @data::jsonb)";
 
-            await connection.ExecuteAsync(uiflowQuery, new { flow.Name, flow.ProjectId, data });
+            await connection.ExecuteAsync(uiflowQuery, new { flow.Name, flow.UserId, flow.ProjectId, data });
         }
 
         public async Task UpdateUIFlowAsync(UIFlowDto flow)

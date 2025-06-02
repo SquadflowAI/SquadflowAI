@@ -103,9 +103,9 @@ namespace SquadflowAI.Infrastructure
 
             const string createTableActionRun = @"CREATE TABLE actionRun (
                                     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                                    agentName VARCHAR(255),
-                                    name VARCHAR(255),
-                                    date TIMESTAMP,
+                                    agentId UUID,
+                                    flowId UUID,
+                                    createddate TIMESTAMP,
                                     data TEXT,
                                     bytedata BYTEA);";
 
@@ -148,6 +148,7 @@ namespace SquadflowAI.Infrastructure
 
             const string createTableUIFlows = @"CREATE TABLE uiflows (
                                     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                                    userId UUID NOT NULL,
                                     projectId UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
                                     name VARCHAR(255),
                                     data JSONB);";

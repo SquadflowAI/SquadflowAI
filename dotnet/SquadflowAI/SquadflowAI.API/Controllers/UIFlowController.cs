@@ -99,5 +99,29 @@ namespace SquadflowAI.API.Controllers
 
             return Ok();
         }
+
+        #region ActionRuns
+
+        [HttpGet("action-runs/by-flowid/{id}")]
+        public async Task<IActionResult> GetActionRunsByFlowIdAsync(string id)
+        {
+            var flowId = new Guid(id);
+
+            var actionRuns = await _iUIFlowService.GetActionRunsByFlowIdAsync(flowId);
+
+            return Ok(actionRuns);
+        }
+
+        [HttpGet("action-runs/by-agentid/{id}")]
+        public async Task<IActionResult> GetActionRunsByAgentIdAsync(string id)
+        {
+            var flowId = new Guid(id);
+
+            var actionRuns = await _iUIFlowService.GetActionRunsByAgentIdAsync(flowId);
+
+            return Ok(actionRuns);
+        }
+
+        #endregion
     }
 }
