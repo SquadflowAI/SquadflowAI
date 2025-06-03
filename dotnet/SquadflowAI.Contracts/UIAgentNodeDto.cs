@@ -12,6 +12,7 @@ namespace SquadflowAI.Contracts.Dtos
         public string? Name {get; set;}
         public string? Type { get; set; }
         public IDictionary<string, string>? Parameters { get; set; }
+        public string? Input { get; set; }
         public string? Output { get; set; }
         public List<int>? NextNodeIds { get; set; } = new();
         public int OrderSequence { get; set; }

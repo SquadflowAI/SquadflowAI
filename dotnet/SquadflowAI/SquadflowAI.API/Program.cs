@@ -42,13 +42,13 @@ builder.Services.AddHttpClient<IOpenAIAPIClient, OpenAIAPIClient>(client =>
     // client.DefaultRequestHeaders.Add("Authorization", $"Bearer {openAIApiKey}");
 });
 
-builder.Services.AddHttpClient<ITool, SerperAPIClient>(client =>
+builder.Services.AddHttpClient<ISerperAPIClient, SerperAPIClient>(client =>
 {
     client.BaseAddress = new Uri("https://google.serper.dev/search");
-    client.DefaultRequestHeaders.Add("X-API-KEY", $"{serperApiKey}");
+   // client.DefaultRequestHeaders.Add("X-API-KEY", $"{serperApiKey}");
 });
 
-builder.Services.AddHttpClient<ITool, WebScraper>(client =>
+builder.Services.AddHttpClient<IWebScraper, WebScraper>(client =>
 {
     client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36");
     client.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");

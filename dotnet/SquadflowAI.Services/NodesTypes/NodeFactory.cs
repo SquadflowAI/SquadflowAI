@@ -30,8 +30,9 @@ namespace SquadflowAI.Services.NodesTypes
             {
                 "text-input" => (INode)provider.GetRequiredService<TextInputNode>(),
                 "llm-promt" => (INode)provider.GetRequiredService<LLMPromptNode>(),
-                "ai_summarize_text" => (INode)provider.GetRequiredService<AISummarizeTextNode>(),
+                "text-summarizer" => (INode)provider.GetRequiredService<AISummarizeTextNode>(),
                 "text-output" => (INode)provider.GetRequiredService<TextOutputNode>(),
+                "web-research" => (INode)provider.GetRequiredService<WebResearchNode>(),
                 _ => throw new NotSupportedException($"Node type {node.Type} not supported")
             };
 

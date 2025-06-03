@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SquadflowAI.Tools.WebScraper
 {
-    public class WebScraper : ITool
+    public class WebScraper : IWebScraper//ITool
     {
         public string Key => "web-scraper";
 
@@ -22,13 +22,13 @@ namespace SquadflowAI.Tools.WebScraper
             _httpClient = httpClient;
         }
 
-        public async Task<ToolResponseDto> ExecuteAsync(ToolConfigDto configs)
+        public async Task<string> ExecuteAsync(dynamic input)
         {
             try
             {
                 List<string> result = new List<string>();
 
-                if (configs.Input is string singleUrl)
+                if (input is string singleUrl)
                 {
                     var scrapedHtml = await ScrapeAsync(singleUrl);
                     if (scrapedHtml != null)
@@ -36,7 +36,7 @@ namespace SquadflowAI.Tools.WebScraper
                         result.Add(scrapedHtml);
                     }
                 }
-                else if (configs.Input is IEnumerable<string> urlList)
+                else if (input is IEnumerable<string> urlList)
                 {
                     int counter = 0;   
                     foreach (var currentUrl in urlList)
@@ -54,7 +54,7 @@ namespace SquadflowAI.Tools.WebScraper
                         counter++;
                     }
                 }
-                else if (configs.Input is JToken token)
+                else if (input is JToken token)
                 {
                     if (token.Type == JTokenType.String)
                     {
@@ -103,13 +103,13 @@ namespace SquadflowAI.Tools.WebScraper
                     var joinResult = string.Join(", NEXT SCRAPED HTML: ", result.Select((x => x)));
 
 
-                    var finalResult = new ToolResponseDto()
-                    {
-                        Data = joinResult,
-                        DataType = Contracts.Enums.ToolDataTypeEnum.String
-                    };
+                    //var finalResult = new ToolResponseDto()
+                    //{
+                    //    Data = joinResult,
+                    //    DataType = Contracts.Enums.ToolDataTypeEnum.String
+                    //};
 
-                    return finalResult;
+                    return joinResult;
                 }
 
                 return null;

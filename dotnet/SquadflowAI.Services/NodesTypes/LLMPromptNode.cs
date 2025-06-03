@@ -1,4 +1,5 @@
-﻿using SquadflowAI.Contracts;
+﻿using Microsoft.Extensions.Configuration;
+using SquadflowAI.Contracts;
 using SquadflowAI.Contracts.Dtos;
 using SquadflowAI.Domain;
 using SquadflowAI.Infrastructure.Interfaces;
@@ -17,13 +18,15 @@ namespace SquadflowAI.Services.NodesTypes
     public class LLMPromptNode : INode
     {
         private readonly IOpenAIAPIClient _openAIAPIClient;
-        private readonly IIntegrationsService _integrationsService; 
+        private readonly IIntegrationsService _integrationsService;
+        private IConfiguration _configuration;
         public string Id { get; private set; }
 
-        public LLMPromptNode(IOpenAIAPIClient openAIAPIClient, IIntegrationsService integrationsService)
+        public LLMPromptNode(IOpenAIAPIClient openAIAPIClient, IIntegrationsService integrationsService, IConfiguration configuration)
         {
             _openAIAPIClient = openAIAPIClient;
             _integrationsService = integrationsService;
+            _configuration = configuration;
         }
 
         public void Initialize(string id, IDictionary<string, string> parameters)
@@ -37,7 +40,8 @@ namespace SquadflowAI.Services.NodesTypes
             var prompt = parameters["prompt"] + " " + input;
 
             //LLM API here
-            if (false) // for offline testing
+            var offline = _configuration.GetValue<bool>("OFFLINE");
+            if (!offline)
             {
                 var integration = await _integrationsService.GetIntegrationByUserIdAsync((Guid)uIFlow.UserId);
                 var configsForLLM = new RequestLLMDto();

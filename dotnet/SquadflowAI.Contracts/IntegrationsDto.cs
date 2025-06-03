@@ -10,5 +10,7 @@ namespace SquadflowAI.Contracts
     {
         public Guid? UserId { get; set; }
         public string? OpenAIKey { get; set; }
+        public string? SerperAPIKey { get; set; }
+
     }
 }
