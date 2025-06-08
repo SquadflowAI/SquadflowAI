@@ -37,6 +37,9 @@ namespace SquadflowAI.Services.Services
             var hashedOpenAIKey = EncryptionHelper.EncryptApiKey(integration.OpenAIKey, _configuration);
             integration.OpenAIKey = hashedOpenAIKey;
 
+            var hashedSerperAPIKey = EncryptionHelper.EncryptApiKey(integration.SerperAPIKey, _configuration);
+            integration.SerperAPIKey = hashedSerperAPIKey;
+
             await _integrationsRepository.CreateIntegrationAsync(integration);
         }
 
@@ -45,6 +48,8 @@ namespace SquadflowAI.Services.Services
             var result = await _integrationsRepository.GetIntegrationByUserIdAsync(id);
 
             result.OpenAIKey = EncryptionHelper.DecryptApiKey(result.OpenAIKey, _configuration);
+
+            result.SerperAPIKey = EncryptionHelper.DecryptApiKey(result.SerperAPIKey, _configuration);
 
             return result;
         }

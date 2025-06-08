@@ -78,6 +78,8 @@ builder.Services.AddTransient<TextInputNode>();
 builder.Services.AddTransient<LLMPromptNode>();
 builder.Services.AddTransient<AISummarizeTextNode>();
 builder.Services.AddTransient<TextOutputNode>();
+builder.Services.AddTransient<WebResearchNode>();
+
 builder.Services.AddSingleton<NodeFactory>();
 
 

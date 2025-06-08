@@ -34,7 +34,7 @@ namespace SquadflowAI.Services.NodesTypes
 
         public async Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow)
         {
-            //var prompt = parameters["prompt"];
+            var promptOrFocuses = parameters["promptOrFocuses"];
 
             // Call your LLM API here 
             var offline = _configuration.GetValue<bool>("OFFLINE");
@@ -50,7 +50,7 @@ namespace SquadflowAI.Services.NodesTypes
                 configsForLLM.SystemPrompt = systemPrompt;
                 configsForLLM.MaxTokens = 2000;
 
-                configsForLLM.UserPrompt = GenerateExtractContentUserPrompt(input);
+                configsForLLM.UserPrompt = GenerateExtractContentUserPrompt(promptOrFocuses, input);
 
                 var llmResponse = await _openAIAPIClient.SendMessageAsync(configsForLLM, integration.OpenAIKey);
 
@@ -66,21 +66,28 @@ namespace SquadflowAI.Services.NodesTypes
 
         private string GenerateExtractContentSystemPrompt()
         {
-            return $@"You are an advanced AI Text Summarizer. Your job is to generate concise, coherent summaries of provided input text while preserving the original meaning and key points. Use clear, professional language. Avoid adding opinions or unrelated details.
+            return $@"You are an advanced AI Text Summarizer. Your job is to generate concise, coherent summaries of the provided input text, focusing specifically on the topics specified by the user.
 
-            If the input is lengthy or includes multiple sections, produce a structured summary that reflects the main ideas of each section.
+                Use clear, professional language. Avoid adding opinions or unrelated details.
 
-            Your summaries should:
-            - Be factually accurate and neutral
-            - Be significantly shorter than the original input
-            - Capture essential themes, points, or events
-            - Avoid including metadata, boilerplate, or legal disclaimers
-            ";
+                If multiple topics are provided, produce a structured summary that addresses each topic separately. You may use bullet points or subheadings if helpful.
+
+                Your summaries should:
+                - Be factually accurate and neutral
+                - Be significantly shorter than the original input
+                - Focus only on the specified topics
+                - Avoid including metadata, boilerplate, or legal disclaimers
+                ";
         }
 
-        private string GenerateExtractContentUserPrompt(string textOrHtmls)
+
+        private string GenerateExtractContentUserPrompt(string topics, string textOrHtmls)
         {
-            return $@"Summarize the following text or content extracted from an HTML page: {textOrHtmls}.";
+            return $@"Summarize the following content with a focus on these topics: {topics}
+
+                Content:
+                {textOrHtmls}";
         }
+
     }
 }

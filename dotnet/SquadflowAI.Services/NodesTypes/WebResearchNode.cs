@@ -38,7 +38,7 @@ namespace SquadflowAI.Services.NodesTypes
 
         public async Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow)
         {
-            var query = parameters["query"] + " " + input;
+            var query = parameters["prompt"] + " " + input;
 
             var offline = _configuration.GetValue<bool>("OFFLINE");
             if (!offline)
@@ -54,18 +54,21 @@ namespace SquadflowAI.Services.NodesTypes
 
                 var configsForLLM = new RequestLLMDto();
 
-                var systemPrompt = GenerateExtractContentSystemPrompt();
-                configsForLLM.SystemPrompt = systemPrompt;
+                //var systemPrompt = GenerateExtractContentSystemPrompt();
+                //configsForLLM.SystemPrompt = systemPrompt;
 
-                configsForLLM.MaxTokens = 2000;
+                //configsForLLM.MaxTokens = 2000;
 
-                configsForLLM.UserPrompt = GenerateExtractContentUserPrompt(content);
+                //configsForLLM.UserPrompt = GenerateExtractContentUserPrompt(content);
 
-                var llmResponse = await _openAIAPIClient.SendMessageAsync(configsForLLM, integration.OpenAIKey);
+                //var llmResponse = await _openAIAPIClient.SendMessageAsync(configsForLLM, integration.OpenAIKey);
 
                 // Call Summarizer Text
 
-                var textSummarizationResult = await _aISummarizeTextNode.ExecuteAsync(llmResponse.Output, null, uIFlow);
+                var inputDict = new Dictionary<string, string>();
+                inputDict.Add("promptOrFocuses", input);
+
+                var textSummarizationResult = await _aISummarizeTextNode.ExecuteAsync(content, inputDict, uIFlow);
 
                 return textSummarizationResult;
 

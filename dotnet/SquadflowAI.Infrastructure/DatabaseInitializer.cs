@@ -158,6 +158,7 @@ namespace SquadflowAI.Infrastructure
                                     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                                     userId UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
                                     openAIKey VARCHAR(255),
+                                    serperAPIKey VARCHAR(255),
                                     createdDate TIMESTAMP,
                                     updatedDate TIMESTAMP);";
 
