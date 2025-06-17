@@ -10,6 +10,7 @@ namespace SquadflowAI.Services.NodesTypes.Base
     public interface INode
     {
         string Id { get; }
-        Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow);
+        Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, 
+            UIFlowDto uIFlow, IDictionary<string, byte[]>? parametersByte = null);
     }
 }

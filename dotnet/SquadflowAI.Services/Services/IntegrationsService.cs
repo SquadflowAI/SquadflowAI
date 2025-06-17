@@ -43,13 +43,18 @@ namespace SquadflowAI.Services.Services
             await _integrationsRepository.CreateIntegrationAsync(integration);
         }
 
-        public async Task<IntegrationsDto> GetIntegrationByUserIdAsync(Guid id)
+        public async Task<IntegrationsDto> GetIntegrationsByUserIdAsync(Guid id)
         {
             var result = await _integrationsRepository.GetIntegrationByUserIdAsync(id);
 
-            result.OpenAIKey = EncryptionHelper.DecryptApiKey(result.OpenAIKey, _configuration);
+            if (result != null) 
+            {
+                result.OpenAIKey = EncryptionHelper.DecryptApiKey(result.OpenAIKey, _configuration);
+                result.OpenAIKey = "***********************";
 
-            result.SerperAPIKey = EncryptionHelper.DecryptApiKey(result.SerperAPIKey, _configuration);
+                result.SerperAPIKey = EncryptionHelper.DecryptApiKey(result.SerperAPIKey, _configuration);
+                result.SerperAPIKey = "***********************";
+            }
 
             return result;
         }

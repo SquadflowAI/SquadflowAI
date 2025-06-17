@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,8 @@ namespace SquadflowAI.Contracts.Dtos
         public string? Name {get; set;}
         public string? Type { get; set; }
         public IDictionary<string, string>? Parameters { get; set; }
+        public IDictionary<string, byte[]>? ParametersByte { get; set; }
+        public IDictionary<string, IFormFile>? ParametersIFormFile { get; set; }
         public string? Input { get; set; }
         public string? Output { get; set; }
         public List<int>? NextNodeIds { get; set; } = new();

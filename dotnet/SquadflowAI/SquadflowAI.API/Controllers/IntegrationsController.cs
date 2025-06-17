@@ -25,15 +25,15 @@ namespace SquadflowAI.API.Controllers
             return Ok();
         }
 
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult> GetIntegrationByUserId(Guid userId)
-        //{
-        //    var integration = await _integrationsService.GetIntegrationByUserIdAsync(userId);
-        //    if (integration == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return Ok(integration);
-        //}
+        [HttpGet("user-id/{userId}")]
+        public async Task<IActionResult> GetIntegrationsByUserId(Guid userId)
+        {
+            var integration = await _integrationsService.GetIntegrationsByUserIdAsync(userId);
+            if (integration == null)
+            {
+                return NotFound();
+            }
+            return Ok(integration);
+        }
     }
 }

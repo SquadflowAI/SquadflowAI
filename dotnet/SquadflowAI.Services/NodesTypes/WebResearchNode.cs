@@ -36,14 +36,14 @@ namespace SquadflowAI.Services.NodesTypes
 
         public string Id => throw new NotImplementedException();
 
-        public async Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow)
+        public async Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow, IDictionary<string, byte[]>? parametersByte = null)
         {
             var query = parameters["prompt"] + " " + input;
 
             var offline = _configuration.GetValue<bool>("OFFLINE");
             if (!offline)
             {
-                var integration = await _integrationsService.GetIntegrationByUserIdAsync((Guid)uIFlow.UserId);
+                var integration = await _integrationsService.GetIntegrationsByUserIdAsync((Guid)uIFlow.UserId);
                 var serperAPIResponse = await _serperAPIClient.ExecuteAsync(query, integration.SerperAPIKey);
 
                 // Foreach page extract html

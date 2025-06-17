@@ -19,7 +19,7 @@ namespace SquadflowAI.Services.NodesTypes
             Id = id;
         }
 
-        public Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow)
+        public Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow, IDictionary<string, byte[]>? parametersByte = null)
         {
             var param = parameters["text"];
             return Task.FromResult(param);

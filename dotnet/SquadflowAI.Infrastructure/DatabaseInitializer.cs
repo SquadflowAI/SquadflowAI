@@ -234,6 +234,7 @@ namespace SquadflowAI.Infrastructure
                    ('HTML to PDF', 'html-to-pdf', 'core'),
                    ('Human Action', 'human-action', 'core'),
                    ('Text Input', 'text-input', 'input'),
+                   ('Pdf Input', 'pdf-input', 'input'),
                    ('Text Output', 'text-output', 'output'),
                    ('Pdf Output', 'pdf-output', 'output'),
                    ('Word Output', 'word-output', 'output'),

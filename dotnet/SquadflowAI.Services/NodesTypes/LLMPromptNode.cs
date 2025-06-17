@@ -34,7 +34,7 @@ namespace SquadflowAI.Services.NodesTypes
             Id = id;
         }
 
-        public async Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow)
+        public async Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow, IDictionary<string, byte[]>? parametersByte = null)
         {
             //var prompt = parameters["prompt"].Replace("{{input}}", input);
             var prompt = parameters["prompt"] + " " + input;
@@ -43,7 +43,7 @@ namespace SquadflowAI.Services.NodesTypes
             var offline = _configuration.GetValue<bool>("OFFLINE");
             if (!offline)
             {
-                var integration = await _integrationsService.GetIntegrationByUserIdAsync((Guid)uIFlow.UserId);
+                var integration = await _integrationsService.GetIntegrationsByUserIdAsync((Guid)uIFlow.UserId);
                 var configsForLLM = new RequestLLMDto();
 
                 var systemPrompt = GenerateSystemPrompt();

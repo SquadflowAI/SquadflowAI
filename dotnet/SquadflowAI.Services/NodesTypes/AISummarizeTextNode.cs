@@ -32,7 +32,7 @@ namespace SquadflowAI.Services.NodesTypes
             Id = id;
         }
 
-        public async Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow)
+        public async Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow, IDictionary<string, byte[]>? parametersByte = null)
         {
             var promptOrFocuses = parameters["promptOrFocuses"];
 
@@ -40,7 +40,7 @@ namespace SquadflowAI.Services.NodesTypes
             var offline = _configuration.GetValue<bool>("OFFLINE");
             if (!offline)
             {
-                var integration = await _integrationsService.GetIntegrationByUserIdAsync((Guid)uIFlow.UserId);
+                var integration = await _integrationsService.GetIntegrationsByUserIdAsync((Guid)uIFlow.UserId);
 
                 // LLM Call
 
@@ -66,28 +66,39 @@ namespace SquadflowAI.Services.NodesTypes
 
         private string GenerateExtractContentSystemPrompt()
         {
-            return $@"You are an advanced AI Text Summarizer. Your job is to generate concise, coherent summaries of the provided input text, focusing specifically on the topics specified by the user.
+            return $@"You are an advanced AI Text Summarizer. Your role is to create clear, concise, and well-organized summaries based on the user’s input content and focus topics.
 
-                Use clear, professional language. Avoid adding opinions or unrelated details.
+            Your summaries must:
+            - Be significantly shorter than the original content
+            - Be factually accurate and neutral
+            - Focus only on the user’s requested topics
+            - Avoid including metadata, disclaimers, or unrelated boilerplate
 
-                If multiple topics are provided, produce a structured summary that addresses each topic separately. You may use bullet points or subheadings if helpful.
+            Adapt your summary to match the domain of the content. When appropriate, organize information into meaningful sections or use subheadings (e.g., for technical reports, news, scientific papers, business updates, etc.). 
 
-                Your summaries should:
-                - Be factually accurate and neutral
-                - Be significantly shorter than the original input
-                - Focus only on the specified topics
-                - Avoid including metadata, boilerplate, or legal disclaimers
-                ";
+            **Use spacing and line breaks generously** to separate titles, sections, and paragraphs, so the output is easy to read and never looks like one large block of text.
+
+            You must be flexible:
+            - Use professional, domain-appropriate language
+            - Match the tone and depth to the subject (e.g., simple for general news, more technical for scientific topics)
+            - Be adaptable to all content types: academic, corporate, government, financial, media, scientific, etc.
+
+            If multiple topics are given, address each clearly and distinctly.";
         }
+
+
 
 
         private string GenerateExtractContentUserPrompt(string topics, string textOrHtmls)
         {
             return $@"Summarize the following content with a focus on these topics: {topics}
 
-                Content:
-                {textOrHtmls}";
+            Ensure the summary is organized, domain-appropriate, and easy to read. Use sections or logical grouping where it helps clarity.
+
+            Content:
+            {textOrHtmls}";
         }
+
 
     }
 }

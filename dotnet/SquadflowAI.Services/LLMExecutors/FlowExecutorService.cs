@@ -28,7 +28,7 @@ namespace SquadflowAI.Services.LLMExecutors
             {
                 var nodeData = _flowMap[currentNodeSequence];
                 var node = _nodeFactory.CreateNode(nodeData);
-                input = await node.ExecuteAsync(input, nodeData.Parameters, uIFlow);
+                input = await node.ExecuteAsync(input, nodeData.Parameters, uIFlow, nodeData.ParametersByte);
 
                 currentNodeSequence = nodeData.NextNodeIds.FirstOrDefault();
             }

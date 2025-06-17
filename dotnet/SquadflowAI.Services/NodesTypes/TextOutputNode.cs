@@ -26,7 +26,7 @@ namespace SquadflowAI.Services.NodesTypes
             Id = id;
         }
 
-        public async Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow)
+        public async Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow, IDictionary<string, byte[]>? parametersByte = null)
         {
 
             var flow = await _uIFlowRepository.GetUIFlowByIdAsync((Guid)uIFlow.Id);
