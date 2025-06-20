@@ -93,6 +93,8 @@ builder.Services.AddScoped<IToolsRepository, ToolsRepository>();
 builder.Services.AddScoped<IProjectsRepository, ProjectsRepository>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IIntegrationsRepository, IntegrationsRepository>();
+builder.Services.AddScoped<IFileDocumentsRepository, FileDocumentsRepository>();
+
 
 //builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>

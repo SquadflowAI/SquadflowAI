@@ -93,6 +93,13 @@ namespace SquadflowAI.Infrastructure
                 AND table_name = 'integrations'
             );";
 
+            const string checkTableFilesDocumentsQuery = @"
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables 
+                WHERE table_schema = 'public' 
+                AND table_name = 'filesdocuments'
+            );";
+
             //CREATE
 
             const string createTableAgents = @"CREATE TABLE agents (
@@ -153,8 +160,7 @@ namespace SquadflowAI.Infrastructure
                                     name VARCHAR(255),
                                     data JSONB);";
 
-
-            const string createTableIntegrations = @"CREATE TABLE integrations (
+            const string createTableIntegrations  = @"CREATE TABLE integrations (
                                     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                                     userId UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
                                     openAIKey VARCHAR(255),
@@ -162,8 +168,13 @@ namespace SquadflowAI.Infrastructure
                                     createdDate TIMESTAMP,
                                     updatedDate TIMESTAMP);";
 
-
-
+            const string createTableFilesDocuments = @"CREATE TABLE filesdocuments (
+                                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                                    name TEXT,
+                                    content BYTEA, 
+                                    content_type TEXT,
+                                    createdDate TIMESTAMP,
+                                    updatedDate TIMESTAMP);";
 
             using var connection = _dbContext.CreateConnection();
 
@@ -178,6 +189,7 @@ namespace SquadflowAI.Infrastructure
             bool tableExistsProjects = connection.ExecuteScalar<bool>(checkTableProjectsQuery);
             bool tableExistsUsers = connection.ExecuteScalar<bool>(checkTableUsersQuery);
             bool tableExistsIntegrations = connection.ExecuteScalar<bool>(checkTableIntegrationsQuery);
+            bool tableExistsFilesDocuments = connection.ExecuteScalar<bool>(checkTableFilesDocumentsQuery);
 
             if (!tableExistsAgents)
             {
@@ -270,9 +282,16 @@ namespace SquadflowAI.Infrastructure
                 Console.WriteLine("Table 'UIFlows' has been created.");
             }
 
+            if (!tableExistsFilesDocuments)
+            {
+                connection.Execute(createTableFilesDocuments);
+                Console.WriteLine("Table 'FilesDocuments' has been created.");
+            }
+
             if (tableExistsAgents && tableExistsActionRun && tableExistsCoreToolsSystem &&
                 tableExistsAIToolsSystem && tableExistsToolsSystem && tableExistsAppsSystem &&
-                tableExistsUIFlows && tableExistsProjects && tableExistsUsers && tableExistsIntegrations)
+                tableExistsUIFlows && tableExistsProjects && tableExistsUsers && tableExistsIntegrations 
+                && tableExistsFilesDocuments)
             {
                 Console.WriteLine("No new tables to create.");
             }

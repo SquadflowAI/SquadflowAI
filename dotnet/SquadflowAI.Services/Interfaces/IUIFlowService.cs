@@ -1,4 +1,5 @@
-﻿using SquadflowAI.Contracts.Dtos;
+﻿using Microsoft.AspNetCore.Http;
+using SquadflowAI.Contracts.Dtos;
 using SquadflowAI.Domain;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,12 @@ namespace SquadflowAI.Services.Interfaces
         #region ActionRun
         Task<IEnumerable<ActionRun>> GetActionRunsByAgentIdAsync(Guid agentId);
         Task<IEnumerable<ActionRun>> GetActionRunsByFlowIdAsync(Guid flowId);
-        
+
+        #endregion
+
+        #region Download Upload
+        Task InsertFileUIFlowAsync(Guid flowId, string nodeId, string key, IFormFile file);
+
         #endregion
     }
 }

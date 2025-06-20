@@ -15,6 +15,8 @@ namespace SquadflowAI.Contracts.Dtos
         public IDictionary<string, string>? Parameters { get; set; }
         public IDictionary<string, byte[]>? ParametersByte { get; set; }
         public IDictionary<string, IFormFile>? ParametersIFormFile { get; set; }
+        public IDictionary<string, string>? ParametersByteIds { get; set; }
+        public IDictionary<string, string>? ParametersFileUrls { get; set; }
         public string? Input { get; set; }
         public string? Output { get; set; }
         public List<int>? NextNodeIds { get; set; } = new();

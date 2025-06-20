@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SquadflowAI.Contracts;
 using SquadflowAI.Contracts.Dtos;
 using SquadflowAI.Domain;
+using SquadflowAI.Infrastructure.Interfaces;
 using SquadflowAI.Services.Interfaces;
 using SquadflowAI.Services.Services;
 
@@ -12,10 +14,12 @@ namespace SquadflowAI.API.Controllers
     public class UIFlowController : ControllerBase
     {
         private readonly IUIFlowService _iUIFlowService;
+        private readonly IFileDocumentsRepository _fileDocumentsRepository;
 
-        public UIFlowController(IUIFlowService iUIFlowService)
+        public UIFlowController(IUIFlowService iUIFlowService, IFileDocumentsRepository fileDocumentsRepository)
         {
             _iUIFlowService = iUIFlowService;
+            _fileDocumentsRepository = fileDocumentsRepository;
         }
 
         [HttpPost("create")]
@@ -121,6 +125,32 @@ namespace SquadflowAI.API.Controllers
 
             return Ok(actionRuns);
         }
+
+        #endregion
+
+        #region Document Download Upload
+
+        [HttpPost("upload-file")]
+        public async Task<IActionResult> UploadFileToNode([FromForm] FileUploadDto dto)
+        {
+            await _iUIFlowService.InsertFileUIFlowAsync(dto.FlowId, dto.NodeId, dto.Key, dto.File);
+            return Ok();
+        }
+
+        [HttpGet("documents/download/{id}")]
+        public async Task<IActionResult> Download(Guid id)
+        {
+            var document = await _fileDocumentsRepository.GetFileDocumentByIdAsync(id);
+            if (document == null)
+                return NotFound();
+
+            return File(
+                document.Content,
+                document.ContentType ?? "application/octet-stream",
+                document.Name ?? "file"
+            );
+        }
+
 
         #endregion
     }
