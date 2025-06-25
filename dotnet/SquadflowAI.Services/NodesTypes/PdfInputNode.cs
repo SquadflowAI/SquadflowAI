@@ -14,7 +14,7 @@ namespace SquadflowAI.Services.NodesTypes
 {
     public class PdfInputNode : INode
     {
-        private readonly string _tessDataFolder;
+        //private readonly string _tessDataFolder;
         public PdfInputNode() { }
 
         public string Id { get; private set; }
@@ -45,7 +45,7 @@ namespace SquadflowAI.Services.NodesTypes
             //string text2 = ExtractTextFromPdf(pdfByte);
 
 
-            return "";
+            return textFromPdf;
         }
 
         
@@ -105,8 +105,10 @@ namespace SquadflowAI.Services.NodesTypes
         {
             var sb = new StringBuilder();
 
+            var tessDataPath = Path.Combine(AppContext.BaseDirectory, "tessdata");
+
             using (var pdfDoc = PdfiumViewer.PdfDocument.Load(path))
-            using (var engine = new TesseractEngine(_tessDataFolder, "eng", EngineMode.Default))
+            using (var engine = new TesseractEngine(tessDataPath, "eng", EngineMode.Default))
             {
                 for (int i = 0; i < pdfDoc.PageCount; i++)
                 {

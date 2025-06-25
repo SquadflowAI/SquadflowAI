@@ -174,6 +174,29 @@ namespace SquadflowAI.Services.Services
         {
             var flow = await _uIFlowRepository.GetUIFlowByIdAsync(id);
 
+            // GET bytes array if pdf includes
+
+            foreach (var node in flow.Nodes ?? Enumerable.Empty<UIAgentNodeDto>())
+            {
+                if (node.ParametersByteIds != null)
+                {
+                    foreach (var kvp in node.ParametersByteIds)
+                    {
+                        var key = kvp.Key;
+                        var fileId = kvp.Value;
+
+                        var file = await _fileDocumentsRepository.GetFileDocumentByIdAsync(new Guid(fileId));
+                        // TODO
+
+                        if (node.ParametersFileUrls == null)
+                        {
+                            node.ParametersFileUrls = new Dictionary<string, string>();
+                        }
+                        //node.ParametersFileUrls[key] = url; TODO
+                    }
+                }
+            }
+
             var result = await _flowExecutorService.ExecuteAsync(flow);
 
             if (result != null)
