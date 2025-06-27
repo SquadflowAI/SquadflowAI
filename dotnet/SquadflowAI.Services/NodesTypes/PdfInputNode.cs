@@ -1,22 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
-using SquadflowAI.Contracts.Dtos;
+﻿using SquadflowAI.Contracts.Dtos;
 using SquadflowAI.Services.NodesTypes.Base;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
+using System.Diagnostics;
 using System.Text;
-using System.Threading.Tasks;
-using Tesseract;
 using UglyToad.PdfPig;
 
 namespace SquadflowAI.Services.NodesTypes
 {
     public class PdfInputNode : INode
     {
-        //private readonly string _tessDataFolder;
-        public PdfInputNode() { }
-
         public string Id { get; private set; }
 
         public void Initialize(string id, IDictionary<string, string> parameters)
@@ -26,47 +17,23 @@ namespace SquadflowAI.Services.NodesTypes
 
         public async Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow, IDictionary<string, byte[]> parametersByte)
         {
-            byte[] pdfByte = parametersByte["pdf"];
-
-            //IFormFile uploadedFile = null;
-
-            // From Gmail
-            //byte[] pdfFromEmail = null;
-
-            string textFromPdf = ExtractTextFromPdf(pdfByte);
-
-            // From File Upload (e.g., frontend sends IFormFile)
-            //using var stream = uploadedFile.OpenReadStream();
-            //using var ms = new MemoryStream();
-            //stream.CopyTo(ms);
-
-            //byte[] pdfFromUpload = ms.ToArray();
-
-            //string text2 = ExtractTextFromPdf(pdfByte);
-
-
-            return textFromPdf;
-        }
-
-        
-
-        public string ExtractTextFromPdf(byte[] pdfBytes)
-        {
-            string tempPdfPath = SaveTempFile(pdfBytes);
+            byte[] pdfBytes = parametersByte["pdf"];
+            string tempPdfPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.pdf");
+            await File.WriteAllBytesAsync(tempPdfPath, pdfBytes);
 
             try
             {
-                // 1. Try PdfPig (text-based)
+                // Try to extract text with PdfPig
                 string text = TryPdfPig(tempPdfPath);
-                if (!string.IsNullOrWhiteSpace(text))
+                //if (!string.IsNullOrWhiteSpace(text))
+                if(false)
                 {
-                    Console.WriteLine("✅ Extracted using PdfPig.");
+                    Console.WriteLine("✅ Text extracted with PdfPig");
                     return text;
                 }
 
-                // 2. Fallback: OCR (image-based scan)
-                Console.WriteLine("⚠️ PdfPig failed. Using OCR fallback.");
-                return RunOcrOnPdf(tempPdfPath);
+                Console.WriteLine("⚠️ PdfPig failed or returned empty. Falling back to OCR...");
+                return await ExtractTextWithOcrFallbackAsync(tempPdfPath);
             }
             finally
             {
@@ -74,74 +41,93 @@ namespace SquadflowAI.Services.NodesTypes
             }
         }
 
-        private string SaveTempFile(byte[] bytes)
-        {
-            string path = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.pdf");
-            File.WriteAllBytes(path, bytes);
-            return path;
-        }
-
         private string TryPdfPig(string path)
         {
             try
             {
                 var sb = new StringBuilder();
-                using (var doc = PdfDocument.Open(path))
+                using (var document = PdfDocument.Open(path))
                 {
-                    foreach (var page in doc.GetPages())
+                    foreach (var page in document.GetPages())
+                    {
                         sb.AppendLine(page.Text);
+                    }
                 }
-
-                var output = sb.ToString().Trim();
-                return string.IsNullOrWhiteSpace(output) ? null : output;
+                return sb.ToString().Trim();
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine($"PdfPig failed: {ex.Message}");
                 return null;
             }
         }
 
-        private string RunOcrOnPdf(string path)
+        private async Task<string> ExtractTextWithOcrFallbackAsync(string pdfPath)
         {
+            var images = ConvertPdfToImages(pdfPath);
             var sb = new StringBuilder();
 
-            var tessDataPath = Path.Combine(AppContext.BaseDirectory, "tessdata");
-
-            using (var pdfDoc = PdfiumViewer.PdfDocument.Load(path))
-            using (var engine = new TesseractEngine(tessDataPath, "eng", EngineMode.Default))
+            foreach (var imagePath in images)
             {
-                for (int i = 0; i < pdfDoc.PageCount; i++)
-                {
-                    using (var image = pdfDoc.Render(i, 300, 300, true))
-                    using (var bitmap = new Bitmap(image)) // Convert to Bitmap
-                    using (var pix = PixConverter.ToPix(bitmap))
-                    using (var page = engine.Process(pix))
-                    {
-                        sb.AppendLine(page.GetText());
-                    }
-                }
+                string text = await RunTesseractAsync(imagePath);
+                sb.AppendLine(text);
+                File.Delete(imagePath);
             }
 
             return sb.ToString().Trim();
         }
-    }
 
-
-   public static class PixConverter
-   {
-        public static Pix ToPix(Bitmap image)
+        private List<string> ConvertPdfToImages(string pdfPath)
         {
-            using (var stream = new MemoryStream())
+            string outputPrefix = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            string args = $"-png \"{pdfPath}\" \"{outputPrefix}\"";
+
+            var process = new Process
             {
-                System.Drawing.Imaging.ImageFormat format = System.Drawing.Imaging.ImageFormat.Png;
-                // Save Bitmap to stream as PNG (lossless)
-                image.Save(stream, format);
-                stream.Position = 0;
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "pdftoppm",
+                    Arguments = args,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
 
-                // Tesseract expects image bytes in memory
-                return Pix.LoadFromMemory(stream.ToArray());
-            }
+            process.Start();
+            process.WaitForExit();
+
+            string pattern = Path.GetFileName(outputPrefix) + "-*.png";
+            return Directory.GetFiles(Path.GetTempPath(), pattern).ToList();
         }
-   }
 
+        private async Task<string> RunTesseractAsync(string imagePath)
+        {
+            string outputBase = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "tesseract",
+                    Arguments = $"\"{imagePath}\" \"{outputBase}\" -l eng",
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+
+            process.Start();
+            await process.WaitForExitAsync();
+
+            string outputPath = outputBase + ".txt";
+            if (!File.Exists(outputPath))
+                throw new Exception("Tesseract failed to generate output");
+
+            string text = await File.ReadAllTextAsync(outputPath);
+            File.Delete(outputPath);
+
+            return text;
+        }
+    }
 }

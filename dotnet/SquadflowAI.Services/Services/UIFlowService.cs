@@ -188,11 +188,16 @@ namespace SquadflowAI.Services.Services
                         var file = await _fileDocumentsRepository.GetFileDocumentByIdAsync(new Guid(fileId));
                         // TODO
 
-                        if (node.ParametersFileUrls == null)
+                        if (file != null)
                         {
-                            node.ParametersFileUrls = new Dictionary<string, string>();
+                            if (node.ParametersByte == null)
+                            {
+                                node.ParametersByte = new Dictionary<string, byte[]>();
+                            }
+                            node.ParametersByte[key] = file.Content;
                         }
-                        //node.ParametersFileUrls[key] = url; TODO
+
+                     
                     }
                 }
             }

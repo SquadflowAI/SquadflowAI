@@ -1,29 +1,38 @@
-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-# This stage is used when running from VS in fast mode (Default for Debug configuration)
+﻿# Base image with .NET 9 runtime
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+
+# 👇 Install OCR tools before switching user
+USER root
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        poppler-utils \
+        tesseract-ocr && \
+    rm -rf /var/lib/apt/lists/*
+
+# 🔁 Switch back to app user (Visual Studio sets this at runtime)
 USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-
-# This stage is used to build the service project
+# Build stage
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+
 COPY ["SquadflowAI.API/SquadflowAI.API.csproj", "SquadflowAI.API/"]
 RUN dotnet restore "./SquadflowAI.API/SquadflowAI.API.csproj"
+
 COPY . .
 WORKDIR "/src/SquadflowAI.API"
 RUN dotnet build "./SquadflowAI.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# This stage is used to publish the service project to be copied to the final stage
+# Publish stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./SquadflowAI.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
+# Final stage: production container
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
