@@ -25,8 +25,7 @@ namespace SquadflowAI.Services.NodesTypes
             {
                 // Try to extract text with PdfPig
                 string text = TryPdfPig(tempPdfPath);
-                //if (!string.IsNullOrWhiteSpace(text))
-                if(false)
+                if (!string.IsNullOrWhiteSpace(text))
                 {
                     Console.WriteLine("✅ Text extracted with PdfPig");
                     return text;
