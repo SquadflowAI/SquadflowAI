@@ -12,6 +12,7 @@ namespace SquadflowAI.Services.Interfaces
     public interface IUIFlowService
     {
         Task CreateUIFlowAsync(UIFlowDto flow);
+        Task CreateUIFlowFromTeamplteAsync(FlowTemplate template, Guid userId, Guid projectId);
         Task UpdateUIFlowAsync(UIFlowDto uiflow);
         Task<UIFlowDto> GetUIFlowByNameAsync(string name);
         Task<UIFlowDto> GetUIFlowByIdAsync(Guid id);

@@ -29,6 +29,13 @@ namespace SquadflowAI.API.Controllers
             return Ok();
         }
 
+        [HttpPost("create-from-template/{userId}/{projectId}")]
+        public async Task<IActionResult> CreateUIFlowFromTemplate([FromBody] FlowTemplate body, Guid userId, Guid projectId)
+        {
+            await _iUIFlowService.CreateUIFlowFromTeamplteAsync(body, userId, projectId);
+            return Ok();
+        }
+
         [HttpPost("update")]
         public async Task<IActionResult> UpdateUIFlow([FromBody] UIFlowDto body)
         {

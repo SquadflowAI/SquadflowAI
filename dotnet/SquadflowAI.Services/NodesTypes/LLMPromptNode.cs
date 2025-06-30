@@ -43,7 +43,7 @@ namespace SquadflowAI.Services.NodesTypes
             var offline = _configuration.GetValue<bool>("OFFLINE");
             if (!offline)
             {
-                var integration = await _integrationsService.GetIntegrationsByUserIdAsync((Guid)uIFlow.UserId);
+                var integration = await _integrationsService.GetIntegrationsByUserIdAsync((Guid)uIFlow.UserId, false);
                 var configsForLLM = new RequestLLMDto();
 
                 var systemPrompt = GenerateSystemPrompt();

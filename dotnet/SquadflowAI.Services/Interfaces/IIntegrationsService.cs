@@ -10,6 +10,6 @@ namespace SquadflowAI.Services.Interfaces
     public interface IIntegrationsService
     {
         Task CreateIntegrationAsync(IntegrationsDto integration);
-        Task<IntegrationsDto> GetIntegrationsByUserIdAsync(Guid id);
+        Task<IntegrationsDto> GetIntegrationsByUserIdAsync(Guid id, bool publicRequest = true);
     }
 }

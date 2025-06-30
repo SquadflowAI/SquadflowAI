@@ -63,6 +63,44 @@ namespace SquadflowAI.Services.Services
             await _uIFlowRepository.CreateUIFlowAsync(uiflow);
         }
 
+        public async Task CreateUIFlowFromTeamplteAsync(FlowTemplate template, Guid userId, Guid projectId)
+        {
+            var uiflow = new UIFlowDto();
+            uiflow.Id = new Guid();
+            uiflow.Name = template.Name;
+            uiflow.UserId = userId;
+            uiflow.ProjectId = projectId;
+            uiflow.Nodes = new List<UIAgentNodeDto>();
+            uiflow.Connections = new List<UIAgentNodeConnectionDto>();
+            uiflow.Nodes = template?.DataConverted?.Nodes?.Select(x => new UIAgentNodeDto()
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Type = x.Type,
+                Parameters = x.Parameters,
+                ParametersByte = x.ParametersByte,
+                ParametersIFormFile = x.ParametersIFormFile,
+                ParametersByteIds = x.ParametersByteIds,
+                ParametersFileUrls = x.ParametersFileUrls,
+                Input = x.Input,
+                Output = x.Output,
+                NextNodeIds = x.NextNodeIds,
+                OrderSequence = x.OrderSequence,
+                PositionX = x.PositionX,
+                PositionY = x.PositionY
+            });
+
+            uiflow.Connections = template?.DataConverted?.Connections?.Select(x => new UIAgentNodeConnectionDto()
+            {
+                Id = x.Id,
+                Name = x.Name,
+                SourceNodeId = x.SourceNodeId,
+                TargetNodeId = x.TargetNodeId,
+            });
+
+            await _uIFlowRepository.CreateUIFlowAsync(uiflow);
+        }
+        
         public async Task InsertFileUIFlowAsync(Guid flowId, string nodeId, string key, IFormFile file)
         {
             var flow = await _uIFlowRepository.GetUIFlowByIdAsync(flowId);
@@ -186,7 +224,6 @@ namespace SquadflowAI.Services.Services
                         var fileId = kvp.Value;
 
                         var file = await _fileDocumentsRepository.GetFileDocumentByIdAsync(new Guid(fileId));
-                        // TODO
 
                         if (file != null)
                         {

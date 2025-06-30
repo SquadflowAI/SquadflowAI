@@ -100,6 +100,13 @@ namespace SquadflowAI.Infrastructure
                 AND table_name = 'filesdocuments'
             );";
 
+            const string checkTableFlowTemplatesQuery = @"
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables 
+                WHERE table_schema = 'public' 
+                AND table_name = 'flowtemplates'
+            );";
+
             //CREATE
 
             const string createTableAgents = @"CREATE TABLE agents (
@@ -176,6 +183,15 @@ namespace SquadflowAI.Infrastructure
                                     createdDate TIMESTAMP,
                                     updatedDate TIMESTAMP);";
 
+            const string createTableFlowTemplates = @"CREATE TABLE flowtemplates (
+                                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                                    name TEXT,
+                                    description TEXT,
+                                    category TEXT,
+                                    data JSONB,
+                                    createdDate TIMESTAMP,
+                                    updatedDate TIMESTAMP);";
+
             using var connection = _dbContext.CreateConnection();
 
             // Check if the table exists
@@ -190,6 +206,7 @@ namespace SquadflowAI.Infrastructure
             bool tableExistsUsers = connection.ExecuteScalar<bool>(checkTableUsersQuery);
             bool tableExistsIntegrations = connection.ExecuteScalar<bool>(checkTableIntegrationsQuery);
             bool tableExistsFilesDocuments = connection.ExecuteScalar<bool>(checkTableFilesDocumentsQuery);
+            bool tableExistsFlowTemplates = connection.ExecuteScalar<bool>(checkTableFlowTemplatesQuery);
 
             if (!tableExistsAgents)
             {
@@ -288,10 +305,16 @@ namespace SquadflowAI.Infrastructure
                 Console.WriteLine("Table 'FilesDocuments' has been created.");
             }
 
+            if (!tableExistsFlowTemplates)
+            {
+                connection.Execute(createTableFlowTemplates);
+                Console.WriteLine("Table 'FlowTemplates' has been created.");
+            }
+
             if (tableExistsAgents && tableExistsActionRun && tableExistsCoreToolsSystem &&
                 tableExistsAIToolsSystem && tableExistsToolsSystem && tableExistsAppsSystem &&
                 tableExistsUIFlows && tableExistsProjects && tableExistsUsers && tableExistsIntegrations 
-                && tableExistsFilesDocuments)
+                && tableExistsFilesDocuments && tableExistsFlowTemplates)
             {
                 Console.WriteLine("No new tables to create.");
             }

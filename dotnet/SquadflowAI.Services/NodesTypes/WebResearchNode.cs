@@ -43,7 +43,7 @@ namespace SquadflowAI.Services.NodesTypes
             var offline = _configuration.GetValue<bool>("OFFLINE");
             if (!offline)
             {
-                var integration = await _integrationsService.GetIntegrationsByUserIdAsync((Guid)uIFlow.UserId);
+                var integration = await _integrationsService.GetIntegrationsByUserIdAsync((Guid)uIFlow.UserId, false);
                 var serperAPIResponse = await _serperAPIClient.ExecuteAsync(query, integration.SerperAPIKey);
 
                 // Foreach page extract html
