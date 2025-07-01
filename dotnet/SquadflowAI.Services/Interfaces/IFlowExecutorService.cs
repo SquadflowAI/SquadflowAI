@@ -1,4 +1,5 @@
-﻿using SquadflowAI.Contracts.Dtos;
+﻿using SquadflowAI.Contracts;
+using SquadflowAI.Contracts.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace SquadflowAI.Services.Interfaces
 {
     public interface IFlowExecutorService
     {
-        Task<string> ExecuteAsync(UIFlowDto uIFlow);
+        Task<ExecutionInputOutputDto> ExecuteAsync(UIFlowDto uIFlow);
     }
 }

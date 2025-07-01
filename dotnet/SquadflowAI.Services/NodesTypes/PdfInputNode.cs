@@ -1,4 +1,5 @@
-﻿using SquadflowAI.Contracts.Dtos;
+﻿using SquadflowAI.Contracts;
+using SquadflowAI.Contracts.Dtos;
 using SquadflowAI.Services.NodesTypes.Base;
 using System.Diagnostics;
 using System.Text;
@@ -15,9 +16,19 @@ namespace SquadflowAI.Services.NodesTypes
             Id = id;
         }
 
-        public async Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow, IDictionary<string, byte[]> parametersByte)
+        public async Task<ExecutionInputOutputDto> ExecuteAsync(ExecutionInputOutputDto input, IDictionary<string, string> parameters, UIFlowDto uIFlow, IDictionary<string, byte[]> parametersByte)
         {
-            byte[] pdfBytes = parametersByte["pdf"];
+            var output = new ExecutionInputOutputDto();
+
+            byte[] pdfBytes = null;
+            if (input.ByteInputs != null && input.ByteInputs.Any())
+            {
+                pdfBytes = input.ByteInputs.First().ByteInput; // only process one. If more use loop
+            } else if (parametersByte["pdf"] != null)
+            {
+                pdfBytes = parametersByte["pdf"];
+            }
+               
             string tempPdfPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.pdf");
             await File.WriteAllBytesAsync(tempPdfPath, pdfBytes);
 
@@ -28,11 +39,15 @@ namespace SquadflowAI.Services.NodesTypes
                 if (!string.IsNullOrWhiteSpace(text))
                 {
                     Console.WriteLine("✅ Text extracted with PdfPig");
-                    return text;
+                    
+                    output.Input = text;
+                    return output;
                 }
 
                 Console.WriteLine("⚠️ PdfPig failed or returned empty. Falling back to OCR...");
-                return await ExtractTextWithOcrFallbackAsync(tempPdfPath);
+
+                output.Input = await ExtractTextWithOcrFallbackAsync(tempPdfPath);
+                return output;
             }
             finally
             {

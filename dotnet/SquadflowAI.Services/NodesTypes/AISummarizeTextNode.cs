@@ -32,8 +32,10 @@ namespace SquadflowAI.Services.NodesTypes
             Id = id;
         }
 
-        public async Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow, IDictionary<string, byte[]>? parametersByte = null)
+        public async Task<ExecutionInputOutputDto> ExecuteAsync(ExecutionInputOutputDto input, IDictionary<string, string> parameters, UIFlowDto uIFlow, IDictionary<string, byte[]>? parametersByte = null)
         {
+            var output = new ExecutionInputOutputDto();
+
             var promptOrFocuses = parameters["promptOrFocuses"];
 
             // Call your LLM API here 
@@ -50,15 +52,17 @@ namespace SquadflowAI.Services.NodesTypes
                 configsForLLM.SystemPrompt = systemPrompt;
                 configsForLLM.MaxTokens = 2000;
 
-                configsForLLM.UserPrompt = GenerateExtractContentUserPrompt(promptOrFocuses, input);
+                configsForLLM.UserPrompt = GenerateExtractContentUserPrompt(promptOrFocuses, input.Input);
 
                 var llmResponse = await _openAIAPIClient.SendMessageAsync(configsForLLM, integration.OpenAIKey);
 
-                return llmResponse?.Output;
+                output.Input = llmResponse?.Output;
+                return output;
 
             } else
             {
-                return $"[Summary of '{input}'] using instruction: test";
+                output.Input = $"[Summary of '{input}'] using instruction: test";
+                return output;
             }
 
             //return $"[Summary of '{input}'] using instruction: {prompt}";

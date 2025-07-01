@@ -243,10 +243,10 @@ namespace SquadflowAI.Services.Services
 
             if (result != null)
             {
-                await _actionRunRepository.CreateActionRunAsync(null, flow.Id, result);
+                await _actionRunRepository.CreateActionRunAsync(null, flow.Id, result.Input);
             }
 
-            return result;
+            return result?.Input;
         }
 
         public async Task DeleteUIFlowByIdAsync(Guid id)

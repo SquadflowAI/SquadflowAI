@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SquadflowAI.Contracts.Dtos;
+using SquadflowAI.Services.NodesTypes.Apps;
 using SquadflowAI.Services.NodesTypes.Base;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,7 @@ namespace SquadflowAI.Services.NodesTypes
                 "text-input" => (INode)provider.GetRequiredService<TextInputNode>(),
                 "pdf-input" => (INode)provider.GetRequiredService<PdfInputNode>(),
                 "text-output" => (INode)provider.GetRequiredService<TextOutputNode>(),
+                "gmail-app" => (INode)provider.GetRequiredService<AppGmailReceiverNode>(),
                 _ => throw new NotSupportedException($"Node type {node.Type} not supported")
             };
 

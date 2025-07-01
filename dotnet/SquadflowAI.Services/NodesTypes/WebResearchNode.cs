@@ -36,8 +36,10 @@ namespace SquadflowAI.Services.NodesTypes
 
         public string Id => throw new NotImplementedException();
 
-        public async Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow, IDictionary<string, byte[]>? parametersByte = null)
+        public async Task<ExecutionInputOutputDto> ExecuteAsync(ExecutionInputOutputDto input, IDictionary<string, string> parameters, UIFlowDto uIFlow, IDictionary<string, byte[]>? parametersByte = null)
         {
+            var output = new ExecutionInputOutputDto();
+
             var query = parameters["prompt"] + " " + input;
 
             var offline = _configuration.GetValue<bool>("OFFLINE");
@@ -66,16 +68,19 @@ namespace SquadflowAI.Services.NodesTypes
                 // Call Summarizer Text
 
                 var inputDict = new Dictionary<string, string>();
-                inputDict.Add("promptOrFocuses", input);
+                inputDict.Add("promptOrFocuses", input.Input);
 
-                var textSummarizationResult = await _aISummarizeTextNode.ExecuteAsync(content, inputDict, uIFlow);
+                var inputForSummarizer = new ExecutionInputOutputDto();
+                inputForSummarizer.Input = content;
+                var textSummarizationResult = await _aISummarizeTextNode.ExecuteAsync(inputForSummarizer, inputDict, uIFlow);
 
                 return textSummarizationResult;
 
             }
             else
             {
-                return "WebReasearch proccesed something";
+                output.Input = "WebReasearch proccesed something";
+                return output;
             }
             
 

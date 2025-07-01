@@ -1,5 +1,6 @@
 using Microsoft.OpenApi.Models;
 using SquadflowAI.Infrastructure;
+using SquadflowAI.Infrastructure.Clients;
 using SquadflowAI.Infrastructure.Interfaces;
 using SquadflowAI.Infrastructure.Repository;
 using SquadflowAI.LLMConnector.Interfaces;
@@ -8,6 +9,7 @@ using SquadflowAI.Services.Agent;
 using SquadflowAI.Services.Interfaces;
 using SquadflowAI.Services.LLMExecutors;
 using SquadflowAI.Services.NodesTypes;
+using SquadflowAI.Services.NodesTypes.Apps;
 using SquadflowAI.Services.Services;
 using SquadflowAI.Tools.DataAnalyzer;
 using SquadflowAI.Tools.GmailClient;
@@ -72,6 +74,7 @@ builder.Services.AddTransient<IProjectsService, ProjectsService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IFlowExecutorService, FlowExecutorService>();
 builder.Services.AddTransient<IIntegrationsService, IntegrationsService>();
+builder.Services.AddTransient<IGmailReceiverClient, GmailReceiverClient>();
 
 
 builder.Services.AddTransient<TextInputNode>();
@@ -79,8 +82,8 @@ builder.Services.AddTransient<LLMPromptNode>();
 builder.Services.AddTransient<AISummarizeTextNode>();
 builder.Services.AddTransient<TextOutputNode>();
 builder.Services.AddTransient<WebResearchNode>();
-builder.Services.AddTransient<PdfInputNode>();
-
+builder.Services.AddTransient<PdfInputNode>(); 
+builder.Services.AddTransient<AppGmailReceiverNode>();
 
 builder.Services.AddSingleton<NodeFactory>();
 

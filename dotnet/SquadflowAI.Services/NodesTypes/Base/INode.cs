@@ -1,4 +1,5 @@
-﻿using SquadflowAI.Contracts.Dtos;
+﻿using SquadflowAI.Contracts;
+using SquadflowAI.Contracts.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace SquadflowAI.Services.NodesTypes.Base
     public interface INode
     {
         string Id { get; }
-        Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, 
+        Task<ExecutionInputOutputDto> ExecuteAsync(ExecutionInputOutputDto input, IDictionary<string, string> parameters, 
             UIFlowDto uIFlow, IDictionary<string, byte[]>? parametersByte = null);
     }
 }

@@ -1,4 +1,5 @@
-﻿using SquadflowAI.Contracts.Dtos;
+﻿using SquadflowAI.Contracts;
+using SquadflowAI.Contracts.Dtos;
 using SquadflowAI.Infrastructure.Interfaces;
 using SquadflowAI.Infrastructure.Repository;
 using SquadflowAI.Services.NodesTypes.Base;
@@ -26,8 +27,9 @@ namespace SquadflowAI.Services.NodesTypes
             Id = id;
         }
 
-        public async Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow, IDictionary<string, byte[]>? parametersByte = null)
+        public async Task<ExecutionInputOutputDto> ExecuteAsync(ExecutionInputOutputDto input, IDictionary<string, string> parameters, UIFlowDto uIFlow, IDictionary<string, byte[]>? parametersByte = null)
         {
+            var output = new ExecutionInputOutputDto();
 
             var flow = await _uIFlowRepository.GetUIFlowByIdAsync((Guid)uIFlow.Id);
 
@@ -36,13 +38,14 @@ namespace SquadflowAI.Services.NodesTypes
                 var textOutputNode = flow.Nodes.SingleOrDefault(x => x.Type == Type);
                 if (textOutputNode != null) 
                 {
-                    textOutputNode.Output = input;
+                    textOutputNode.Output = input.Input;
 
                     await _uIFlowRepository.UpdateUIFlowAsync(flow);
                 }
             }
 
-            return input;
+            output.Input = input.Input;
+            return output;
         }
     }
 }

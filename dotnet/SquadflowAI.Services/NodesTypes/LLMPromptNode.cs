@@ -34,10 +34,12 @@ namespace SquadflowAI.Services.NodesTypes
             Id = id;
         }
 
-        public async Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow, IDictionary<string, byte[]>? parametersByte = null)
+        public async Task<ExecutionInputOutputDto> ExecuteAsync(ExecutionInputOutputDto input, IDictionary<string, string> parameters, UIFlowDto uIFlow, IDictionary<string, byte[]>? parametersByte = null)
         {
+            var output = new ExecutionInputOutputDto();
+
             //var prompt = parameters["prompt"].Replace("{{input}}", input);
-            var prompt = parameters["prompt"] + " " + input;
+            var prompt = parameters["prompt"] + " " + input.Input;
 
             //LLM API here
             var offline = _configuration.GetValue<bool>("OFFLINE");
@@ -55,10 +57,12 @@ namespace SquadflowAI.Services.NodesTypes
 
                 var llmResponse = await _openAIAPIClient.SendMessageAsync(configsForLLM, integration.OpenAIKey);
 
-                return llmResponse?.Output;
+                output.Input = llmResponse?.Output;
+                return output;
             } else
             {
-                return "LLM proccesed something";
+                output.Input = "LLM proccesed something";
+                return output;
             }
         }
 

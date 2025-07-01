@@ -1,4 +1,5 @@
-﻿using SquadflowAI.Contracts.Dtos;
+﻿using SquadflowAI.Contracts;
+using SquadflowAI.Contracts.Dtos;
 using SquadflowAI.Services.Interfaces;
 using SquadflowAI.Services.NodesTypes;
 using System;
@@ -17,12 +18,12 @@ namespace SquadflowAI.Services.LLMExecutors
             _nodeFactory = nodeFactory; 
         }
 
-        public async Task<string> ExecuteAsync(UIFlowDto uIFlow)
+        public async Task<ExecutionInputOutputDto> ExecuteAsync(UIFlowDto uIFlow)
         {
             Dictionary<int, UIAgentNodeDto>  _flowMap = uIFlow.Nodes.ToDictionary(n => n.OrderSequence);
 
             var currentNodeSequence = _flowMap.First().Key;
-            string input = "";
+            ExecutionInputOutputDto input = new ExecutionInputOutputDto();
 
             while (currentNodeSequence != 0)
             {

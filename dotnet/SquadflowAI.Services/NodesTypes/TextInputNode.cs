@@ -1,4 +1,5 @@
-﻿using SquadflowAI.Contracts.Dtos;
+﻿using SquadflowAI.Contracts;
+using SquadflowAI.Contracts.Dtos;
 using SquadflowAI.LLMConnector.Interfaces;
 using SquadflowAI.Services.NodesTypes.Base;
 using System;
@@ -19,10 +20,14 @@ namespace SquadflowAI.Services.NodesTypes
             Id = id;
         }
 
-        public Task<string> ExecuteAsync(string input, IDictionary<string, string> parameters, UIFlowDto uIFlow, IDictionary<string, byte[]>? parametersByte = null)
+        public async Task<ExecutionInputOutputDto> ExecuteAsync(ExecutionInputOutputDto input, IDictionary<string, string> parameters, UIFlowDto uIFlow, IDictionary<string, byte[]>? parametersByte = null)
         {
+            var output = new ExecutionInputOutputDto();
+
             var param = parameters["text"];
-            return Task.FromResult(param);
+
+            output.Input = param;
+            return output;
         }
     }
 }
