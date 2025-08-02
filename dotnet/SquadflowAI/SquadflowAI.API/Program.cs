@@ -6,6 +6,7 @@ using SquadflowAI.Infrastructure.Repository;
 using SquadflowAI.LLMConnector.Interfaces;
 using SquadflowAI.LLMConnector.OpenAI;
 using SquadflowAI.Services.Agent;
+using SquadflowAI.Services.Helpers;
 using SquadflowAI.Services.Interfaces;
 using SquadflowAI.Services.LLMExecutors;
 using SquadflowAI.Services.NodesTypes;
@@ -37,6 +38,8 @@ var serperApiKey = configuration.GetValue<string>("SERPER_API_KEY");
 
 var gmailEmail = configuration.GetValue<string>("GMAIL_EMAIL");
 var gmailAppPassword = configuration.GetValue<string>("GMAIL_APPPASWORD");
+
+AuthHelper.Initialize(configuration);
 
 builder.Services.AddHttpClient<IOpenAIAPIClient, OpenAIAPIClient>(client =>
 {

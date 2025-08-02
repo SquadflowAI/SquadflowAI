@@ -213,11 +213,12 @@ namespace SquadflowAI.Infrastructure
                 connection.Execute(createTableAgents);
                 Console.WriteLine("Table 'Agents' has been created.");
                 connection.Execute(@"INSERT INTO agents (name, data, type) VALUES 
-                   ('LLM Promt', '', 'system'),
-                   ('Web Research', '', 'system'),
-                   ('Data search', '', 'system'),
-                   ('Summarize Text', '', 'system'),
-                   ('Categorizer Text', '', 'system');");
+('LLM Promt', '{}', 'system'),
+('Web Research', '{}', 'system'),
+('Data search', '{}', 'system'),
+('Summarize Text', '{}', 'system'),
+('Categorizer Text', '{}', 'system');
+");
             }
 
             if (!tableExistsActionRun)

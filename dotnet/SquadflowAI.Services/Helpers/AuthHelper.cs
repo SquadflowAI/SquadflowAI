@@ -1,4 +1,5 @@
 ﻿using Konscious.Security.Cryptography;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -13,8 +14,14 @@ namespace SquadflowAI.Services.Helpers
 {
     public static class AuthHelper
     {
-        public static string SecretKey = ""; // Replace with a securely stored key
+        public static string SecretKey { get; set; }  // Replace with a securely stored key
         private const int TokenExpirationMinutes = 60; // Token expiration time
+
+        public static void Initialize(IConfiguration configuration)
+        {
+            var key = configuration.GetValue<string>("SECRET");
+            SecretKey = key;
+        }
 
         public static string HashPassword(string password, int saltSize = 16, int hashSize = 32, int iterations = 3, int memorySize = 8192, int parallelism = 1)
         {
@@ -63,6 +70,12 @@ namespace SquadflowAI.Services.Helpers
         public static string GenerateToken(string userId)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
+
+            if (string.IsNullOrEmpty(SecretKey))
+            {
+                throw new InvalidOperationException("SecretKey is not set.");
+            }
+
             var key = Encoding.ASCII.GetBytes(SecretKey);
 
             // Define token descriptor with claims and expiration

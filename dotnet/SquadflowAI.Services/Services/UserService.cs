@@ -27,7 +27,7 @@ namespace SquadflowAI.Services.Services
         {
             _userRepository = userRepository;
 
-            AuthHelper.SecretKey = configuration.GetValue<string>("SECRET_KEY");
+            AuthHelper.SecretKey = configuration.GetValue<string>("SECRET");
         }
 
         public async Task CreateUserAsync(CreateUserDto user)
