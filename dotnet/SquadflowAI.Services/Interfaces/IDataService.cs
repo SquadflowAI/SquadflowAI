@@ -12,5 +12,6 @@ namespace SquadflowAI.Services.Interfaces
     {
         Task InsertDocumentFileAsync(Guid projectId, IFormFile file);
         Task<IEnumerable<FilesDocument>> GetFileDocumentsByProjectIdAsync(Guid projectId);
+        Task DeleteFileDocumentByIdAsync(Guid id);
     }
 }

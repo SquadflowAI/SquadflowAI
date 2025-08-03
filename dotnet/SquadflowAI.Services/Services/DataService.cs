@@ -40,5 +40,10 @@ namespace SquadflowAI.Services.Services
 
             return projects;
         }
+
+        public async Task DeleteFileDocumentByIdAsync(Guid id) 
+        {
+            await _fileDocumentsRepository.DeleteFileDocumentByIdAsync(id);
+        }
     }
 }

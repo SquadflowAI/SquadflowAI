@@ -123,6 +123,7 @@ namespace SquadflowAI.Services.Services
             var document = new FilesDocument
             {
                 Name = file.FileName,
+                ProjectId = (Guid)flow.ProjectId,
                 Content = memoryStream.ToArray(),
                 ContentType = file.ContentType
             };

@@ -151,11 +151,14 @@ namespace SquadflowAI.API.Controllers
             if (document == null)
                 return NotFound();
 
+            Response.Headers["Content-Disposition"] = $"inline; filename=\"{document.Name}\"";
+
             return File(
                 document.Content,
-                document.ContentType ?? "application/octet-stream",
-                document.Name ?? "file"
+                document.ContentType ?? "application/pdf" //"application/octet-stream"
+                                                          //  document.Name ?? "file"
             );
+
         }
 
 

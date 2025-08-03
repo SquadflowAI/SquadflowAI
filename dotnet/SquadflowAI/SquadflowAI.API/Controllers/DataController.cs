@@ -30,5 +30,13 @@ namespace SquadflowAI.API.Controllers
 
             return Ok(result);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteFileData(Guid id)
+        {
+            await _dataService.DeleteFileDocumentByIdAsync(id);
+
+            return Ok();
+        }
     }
 }
