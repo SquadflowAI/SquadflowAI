@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 
 namespace SquadflowAI.Domain
 {
-    public class FilesDocuments
+    public class FilesDocument
     {
         public Guid Id { get; set; }
+        public Guid ProjectId { get; set; }
         public string Name { get; set; }
         public byte[] Content { get; set; }
         public string ContentType { get; set; }

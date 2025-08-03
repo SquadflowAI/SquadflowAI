@@ -78,7 +78,7 @@ builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IFlowExecutorService, FlowExecutorService>();
 builder.Services.AddTransient<IIntegrationsService, IntegrationsService>();
 builder.Services.AddTransient<IGmailReceiverClient, GmailReceiverClient>();
-
+builder.Services.AddTransient<IDataService, DataService>();
 
 builder.Services.AddTransient<TextInputNode>();
 builder.Services.AddTransient<LLMPromptNode>();

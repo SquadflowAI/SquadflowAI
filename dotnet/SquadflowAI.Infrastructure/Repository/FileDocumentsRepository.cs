@@ -19,14 +19,14 @@ namespace SquadflowAI.Infrastructure.Repository
             _dbContext = dbContext;
         }
 
-        public async Task<Guid> CreateFileDocumentAsync(FilesDocuments file)
+        public async Task<Guid> CreateFileDocumentAsync(FilesDocument file)
         {
             using var connection = _dbContext.CreateConnection();
             connection.Open();
 
             const string sql = @"
-                    INSERT INTO filesdocuments (id, name, content, content_type)
-                    VALUES (@Id, @Name, @Content, @ContentType)
+                    INSERT INTO filesdocuments (id, projectId, name, content, content_type)
+                    VALUES (@Id, @ProjectId, @Name, @Content, @ContentType)
                     RETURNING id;";
 
             // Ensure Id is set before insert
@@ -36,7 +36,7 @@ namespace SquadflowAI.Infrastructure.Repository
             return newId;
         }
 
-        public async Task<FilesDocuments?> GetFileDocumentByIdAsync(Guid id)
+        public async Task<FilesDocument?> GetFileDocumentByIdAsync(Guid id)
         {
             using var connection = _dbContext.CreateConnection();
             connection.Open();
@@ -46,7 +46,20 @@ namespace SquadflowAI.Infrastructure.Repository
                 FROM filesdocuments
                 WHERE id = @Id";
 
-            return await connection.QuerySingleOrDefaultAsync<FilesDocuments>(sql, new { Id = id });
+            return await connection.QuerySingleOrDefaultAsync<FilesDocument>(sql, new { Id = id });
+        }
+
+        public async Task<IEnumerable<FilesDocument>?> GetFileDocumentsByProjectIdAsync(Guid projectId)
+        {
+            using var connection = _dbContext.CreateConnection();
+            connection.Open();
+
+            const string sql = @"
+                SELECT id, projectId, name, content_type
+                FROM filesdocuments
+                WHERE projectId = @Id";
+
+            return await connection.QueryAsync<FilesDocument>(sql, new { Id = projectId });
         }
 
         public async Task DeleteFileDocumentByIdAsync(Guid id)

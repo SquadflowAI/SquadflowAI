@@ -120,7 +120,7 @@ namespace SquadflowAI.Services.Services
             using var memoryStream = new MemoryStream();
             await file.CopyToAsync(memoryStream);
 
-            var document = new FilesDocuments
+            var document = new FilesDocument
             {
                 Name = file.FileName,
                 Content = memoryStream.ToArray(),

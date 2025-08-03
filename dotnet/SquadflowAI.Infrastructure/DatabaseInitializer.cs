@@ -177,6 +177,7 @@ namespace SquadflowAI.Infrastructure
 
             const string createTableFilesDocuments = @"CREATE TABLE filesdocuments (
                                     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                                    projectId UUID REFERENCES projects(id) ON DELETE CASCADE,
                                     name TEXT,
                                     content BYTEA, 
                                     content_type TEXT,
